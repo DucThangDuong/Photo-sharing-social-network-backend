@@ -13,3 +13,4 @@ D:\Y3-HK2\LTDD\BackEnd\API\Application\bin\Debug\net8.0\Domain.dll
 D:\Y3-HK2\LTDD\BackEnd\API\Application\bin\Debug\net8.0\Domain.pdb
 D:\Y3-HK2\LTDD\BackEnd\API\Application\obj\Debug\net8.0\Application.csproj.AssemblyReference.cache
 D:\Y3-HK2\LTDD\BackEnd\API\Application\obj\Debug\net8.0\Applicat.44B5EDA2.Up2Date
+D:\Y3-HK2\LTDD\BackEnd\API\Application\obj\Debug\net8.0\Application.sourcelink.json

@@ -17,3 +17,4 @@ D:\Y3-HK2\LTDD\BackEnd\API\Infrastructure\bin\Debug\net8.0\Domain.pdb
 D:\Y3-HK2\LTDD\BackEnd\API\Infrastructure\obj\Debug\net8.0\Infrastructure.csproj.AssemblyReference.cache
 D:\Y3-HK2\LTDD\BackEnd\API\Infrastructure\obj\Debug\net8.0\Infrastr.15EFFBFE.Up2Date
 D:\Y3-HK2\LTDD\BackEnd\API\Infrastructure\obj\Debug\net8.0\Infrastructure.genruntimeconfig.cache
+D:\Y3-HK2\LTDD\BackEnd\API\Infrastructure\obj\Debug\net8.0\Infrastructure.sourcelink.json

@@ -150,3 +150,14 @@ D:\Y3-HK2\LTDD\BackEnd\API\API\bin\Debug\net8.0\Infrastructure.dll
 D:\Y3-HK2\LTDD\BackEnd\API\API\bin\Debug\net8.0\Application.pdb
 D:\Y3-HK2\LTDD\BackEnd\API\API\bin\Debug\net8.0\Infrastructure.pdb
 D:\Y3-HK2\LTDD\BackEnd\API\API\bin\Debug\net8.0\Domain.pdb
+D:\Y3-HK2\LTDD\BackEnd\API\API\bin\Debug\net8.0\AWSSDK.Core.dll
+D:\Y3-HK2\LTDD\BackEnd\API\API\bin\Debug\net8.0\AWSSDK.Extensions.NETCore.Setup.dll
+D:\Y3-HK2\LTDD\BackEnd\API\API\bin\Debug\net8.0\AWSSDK.S3.dll
+D:\Y3-HK2\LTDD\BackEnd\API\API\bin\Debug\net8.0\Google.Apis.dll
+D:\Y3-HK2\LTDD\BackEnd\API\API\bin\Debug\net8.0\Google.Apis.Auth.dll
+D:\Y3-HK2\LTDD\BackEnd\API\API\bin\Debug\net8.0\Google.Apis.Core.dll
+D:\Y3-HK2\LTDD\BackEnd\API\API\bin\Debug\net8.0\Newtonsoft.Json.dll
+D:\Y3-HK2\LTDD\BackEnd\API\API\bin\Debug\net8.0\System.Management.dll
+D:\Y3-HK2\LTDD\BackEnd\API\API\bin\Debug\net8.0\runtimes\win\lib\net7.0\System.Management.dll
+D:\Y3-HK2\LTDD\BackEnd\API\API\obj\Debug\net8.0\API.sourcelink.json
+D:\Y3-HK2\LTDD\BackEnd\API\API\bin\Debug\net8.0\BCrypt.Net-Next.dll
