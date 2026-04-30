@@ -1,4 +1,5 @@
-﻿using Domain.Entities;
+﻿using Application.DTOs;
+using Domain.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,7 +12,8 @@ namespace Application.Interfaces
     {
         public Task AddAsync(string username, string email, string password);
         public Task AddAsync(User newUser);
-        Task<User?> GetByEmailAsync(string email);
-        Task<bool> EmailExistsAsync(string email);
+        public Task<User?> GetByEmailAsync(string email);
+        public Task<bool> EmailExistsAsync(string email);
+        public Task<UserDTO?> GetByIdAsync(int id);
     }
 }

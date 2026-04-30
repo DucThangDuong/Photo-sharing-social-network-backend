@@ -1,4 +1,5 @@
 ﻿using API.Entities;
+using Application.DTOs;
 using Application.Interfaces;
 using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
@@ -10,10 +11,11 @@ using System.Threading.Tasks;
 
 namespace Infrastructure.Repository
 {
-    public class UserRepository:IUserRepository
+    public class UserRepository : IUserRepository
     {
         private readonly InstagramContext _context;
-        public UserRepository(InstagramContext context) { 
+        public UserRepository(InstagramContext context)
+        {
             _context = context;
         }
 
@@ -28,7 +30,7 @@ namespace Infrastructure.Repository
                 Email = email,
                 FullName = username,
                 Username = username,
-                PasswordHash=passwordHash
+                PasswordHash = passwordHash
             };
             await _context.Users.AddAsync(user);
         }
@@ -46,6 +48,21 @@ namespace Infrastructure.Repository
         public async Task<User?> GetByEmailAsync(string email)
         {
             return await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
+        }
+        public async Task<UserDTO?> GetByIdAsync(int id)
+        {
+            return await _context.Users.Select(u => new UserDTO
+            {
+                Id = u.Id,
+                Username = u.Username,
+                Email = u.Email,
+                FullName = u.FullName,
+                Bio = u.Bio,
+                AvatarUrl = u.AvatarUrl,
+                FollowersNumber = u.FollowFollowers.Count(),
+                FollowingsNumber = u.FollowFollowings.Count()
+            })
+                .FirstOrDefaultAsync(u => u.Id == id);
         }
     }
 }

@@ -79,16 +79,7 @@ namespace API.Controller
                         errors = new[] { new { field = "Email", message = "Email already exists" } }
                     });
                 }
-                if (userRegister.Password != userRegister.ConfirmPassword)
-                {
-                    return BadRequest(new
-                    {
-                        success = false,
-                        message = "Validation failed",
-                        errors = new[] { new { field = "ConfirmPassword", message = "Password and Confirm Password do not match" } }
-                    });
-                }
-                await _unitOfWork.UserRepository.AddAsync(userRegister.Username, userRegister.Email, userRegister.Password);
+                await _unitOfWork.UserRepository.AddAsync(userRegister.Email, userRegister.Email, userRegister.Password);
                 await _unitOfWork.SaveChanges();
                 return StatusCode(StatusCodes.Status201Created, new
                 {
@@ -102,6 +93,32 @@ namespace API.Controller
                 {
                     success = false,
                     message = "An error occurred during registration",
+                    errors = new[] { new { field = "Server", message = ex.Message } }
+                });
+            }
+        }
+        [HttpPost("checkEmail")]
+        public async Task<IActionResult> CheckEmail([FromBody] CheckEmailDTO checkEmail)
+        {
+            try
+            {
+                bool ishas = await _unitOfWork.UserRepository.EmailExistsAsync(checkEmail.Email!);
+                return Ok(new
+                {
+                    success = true,
+                    message = "Email check completed",
+                    data = new
+                    {
+                        exists = ishas
+                    }
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new
+                {
+                    success = false,
+                    message = "An error occurred while checking the email",
                     errors = new[] { new { field = "Server", message = ex.Message } }
                 });
             }
