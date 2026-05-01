@@ -1,4 +1,4 @@
-﻿using API.Entities;
+using API.Entities;
 using Application.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -12,12 +12,15 @@ namespace Infrastructure.Repository
     {
         private readonly InstagramContext _context;
         public IUserRepository UserRepository { get; }
-        public UnitOfWork(InstagramContext context,IUserRepository userRepository)
+        public IPostRepository PostRepository { get; }
+
+        public UnitOfWork(InstagramContext context, IUserRepository userRepository)
         {
             _context = context;
             UserRepository = userRepository;
-
+            PostRepository = new PostRepository(_context);
         }
+
         public async Task SaveChanges()
         {
             await _context.SaveChangesAsync();

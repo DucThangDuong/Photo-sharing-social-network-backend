@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,6 +9,7 @@ namespace Application.Interfaces
     public interface IUnitOfWork
     {
         IUserRepository UserRepository { get; }
+        IPostRepository PostRepository { get; }
         Task SaveChanges();
     }
 }

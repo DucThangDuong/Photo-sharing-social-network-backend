@@ -6,6 +6,9 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using System.IO;
+using Microsoft.Extensions.FileProviders;
+
 namespace WebApplication1
 {
     public class Program
@@ -52,8 +55,13 @@ namespace WebApplication1
             builder.Services.AddAuthorization();
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
             builder.Services.AddScoped<IUserRepository, UserRepository>();
+            builder.Services.AddScoped<IPostRepository, PostRepository>();
             builder.Services.AddScoped<IJwtServices, JwtTokenService>();
-            builder.Services.AddControllers();
+            builder.Services.AddControllers()
+                .AddJsonOptions(options =>
+                {
+                    options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
+                });
 
 
             var app = builder.Build();
@@ -62,6 +70,19 @@ namespace WebApplication1
                 app.UseExceptionHandler("/Error");
                 app.UseHsts();
             }
+
+            string imagePath = @"D:\LTDD_images";
+            if (!Directory.Exists(imagePath))
+            {
+                Directory.CreateDirectory(imagePath);
+            }
+
+            app.UseStaticFiles(new StaticFileOptions
+            {
+                FileProvider = new PhysicalFileProvider(imagePath),
+                RequestPath = "/images"
+            });
+
             app.UseCors("CORS");
             app.UseAuthentication();
             app.UseAuthorization();
