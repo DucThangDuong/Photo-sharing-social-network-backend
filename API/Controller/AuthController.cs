@@ -79,7 +79,7 @@ namespace API.Controller
                         errors = new[] { new { field = "Email", message = "Email already exists" } }
                     });
                 }
-                await _unitOfWork.UserRepository.AddAsync(userRegister.Email, userRegister.Email, userRegister.Password);
+                await _unitOfWork.UserRepository.AddAsync(userRegister.UserName, userRegister.FullName, userRegister.Email, userRegister.Password);
                 await _unitOfWork.SaveChanges();
                 return StatusCode(StatusCodes.Status201Created, new
                 {

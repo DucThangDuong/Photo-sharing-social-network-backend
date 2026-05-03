@@ -19,7 +19,7 @@ namespace Infrastructure.Repository
             _context = context;
         }
 
-        public async Task AddAsync(string username, string email, string password)
+        public async Task AddAsync(string username, string fullName, string email, string password)
         {
             string passwordHash = BCrypt.Net.BCrypt.HashPassword(password);
             User user = new User
@@ -28,7 +28,7 @@ namespace Infrastructure.Repository
                 Bio = null,
                 CreatedAt = DateTime.UtcNow,
                 Email = email,
-                FullName = username,
+                FullName = fullName,
                 Username = username,
                 PasswordHash = passwordHash
             };

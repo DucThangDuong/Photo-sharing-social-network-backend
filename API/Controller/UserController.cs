@@ -59,7 +59,6 @@ namespace API.Controller
             {
                 int userId = HttpContext.User.GetUserId();
 
-                // Map DTO sang Entity Post
                 var post = new Domain.Entities.Post
                 {
                     UserId = userId,
@@ -104,7 +103,6 @@ namespace API.Controller
                     }
                 }
 
-                // Lưu vào DB thông qua UnitOfWork
                 await _unitOfWork.PostRepository.AddAsync(post);
                 await _unitOfWork.SaveChanges();
 

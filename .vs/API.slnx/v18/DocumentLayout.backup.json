@@ -3,8 +3,8 @@
   "WorkspaceRootPath": "D:\\Y3-HK2\\LTDD\\BackEnd\\API\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{5872AEB3-BAA3-FE31-B0EB-0FB6DBEDCF83}|Infrastructure\\Infrastructure.csproj|d:\\y3-hk2\\ltdd\\backend\\api\\infrastructure\\repository\\postrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{5872AEB3-BAA3-FE31-B0EB-0FB6DBEDCF83}|Infrastructure\\Infrastructure.csproj|solutionrelative:infrastructure\\repository\\postrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{CBFA08EA-AECE-205F-7B85-326FD0B81BAD}|API\\API.csproj|d:\\y3-hk2\\ltdd\\backend\\api\\api\\controller\\usercontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{CBFA08EA-AECE-205F-7B85-326FD0B81BAD}|API\\API.csproj|solutionrelative:api\\controller\\usercontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{F80C4E72-27A0-12B5-0634-DD5C11CFB0C1}|Application\\Application.csproj|d:\\y3-hk2\\ltdd\\backend\\api\\application\\dtos\\postdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -13,14 +13,6 @@
     {
       "AbsoluteMoniker": "D:0:0:{CBFA08EA-AECE-205F-7B85-326FD0B81BAD}|API\\API.csproj|d:\\y3-hk2\\ltdd\\backend\\api\\api\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{CBFA08EA-AECE-205F-7B85-326FD0B81BAD}|API\\API.csproj|solutionrelative:api\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{CBFA08EA-AECE-205F-7B85-326FD0B81BAD}|API\\API.csproj|d:\\y3-hk2\\ltdd\\backend\\api\\api\\dtos\\postdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{CBFA08EA-AECE-205F-7B85-326FD0B81BAD}|API\\API.csproj|solutionrelative:api\\dtos\\postdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{CBFA08EA-AECE-205F-7B85-326FD0B81BAD}|API\\API.csproj|d:\\y3-hk2\\ltdd\\backend\\api\\api\\controller\\usercontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{CBFA08EA-AECE-205F-7B85-326FD0B81BAD}|API\\API.csproj|solutionrelative:api\\controller\\usercontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -30,7 +22,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 12,
+          "SelectedChildIndex": 14,
           "Children": [
             {
               "$type": "Bookmark",
@@ -82,19 +74,6 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "PostRepository.cs",
-              "DocumentMoniker": "D:\\Y3-HK2\\LTDD\\BackEnd\\API\\Infrastructure\\Repository\\PostRepository.cs",
-              "RelativeDocumentMoniker": "Infrastructure\\Repository\\PostRepository.cs",
-              "ToolTip": "D:\\Y3-HK2\\LTDD\\BackEnd\\API\\Infrastructure\\Repository\\PostRepository.cs",
-              "RelativeToolTip": "Infrastructure\\Repository\\PostRepository.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-01T06:58:57.611Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
               "DocumentIndex": 1,
               "Title": "PostDTO.cs",
               "DocumentMoniker": "D:\\Y3-HK2\\LTDD\\BackEnd\\API\\Application\\DTOs\\PostDTO.cs",
@@ -116,31 +95,17 @@
               "RelativeToolTip": "API\\Program.cs",
               "ViewState": "AgIAACMAAAAAAAAAAAAmwDkAAABKAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-01T05:09:04.979Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-05-01T05:09:04.979Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "PostDTO.cs",
-              "DocumentMoniker": "D:\\Y3-HK2\\LTDD\\BackEnd\\API\\API\\DTOs\\PostDTO.cs",
-              "RelativeDocumentMoniker": "API\\DTOs\\PostDTO.cs",
-              "ToolTip": "D:\\Y3-HK2\\LTDD\\BackEnd\\API\\API\\DTOs\\PostDTO.cs",
-              "RelativeToolTip": "API\\DTOs\\PostDTO.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAuwAwAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-01T04:40:54.204Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 0,
               "Title": "UserController.cs",
               "DocumentMoniker": "D:\\Y3-HK2\\LTDD\\BackEnd\\API\\API\\Controller\\UserController.cs",
               "RelativeDocumentMoniker": "API\\Controller\\UserController.cs",
               "ToolTip": "D:\\Y3-HK2\\LTDD\\BackEnd\\API\\API\\Controller\\UserController.cs",
               "RelativeToolTip": "API\\Controller\\UserController.cs",
-              "ViewState": "AgIAADYAAAAAAAAAAAAYwIUAAAAMAAAAAAAAAA==",
+              "ViewState": "AgIAAC0AAAAAAAAAAAAYwEoAAAAVAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-04-29T16:08:53.778Z",
               "EditorCaption": ""

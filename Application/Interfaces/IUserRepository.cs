@@ -10,7 +10,7 @@ namespace Application.Interfaces
 {
     public interface IUserRepository
     {
-        public Task AddAsync(string username, string email, string password);
+        public Task AddAsync(string username,string fullName, string email, string password);
         public Task AddAsync(User newUser);
         public Task<User?> GetByEmailAsync(string email);
         public Task<bool> EmailExistsAsync(string email);
