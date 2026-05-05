@@ -1,4 +1,4 @@
-﻿using API.Entities;
+using API.Entities;
 using Application.DTOs;
 using Application.Interfaces;
 using Domain.Entities;
@@ -60,9 +60,22 @@ namespace Infrastructure.Repository
                 Bio = u.Bio,
                 AvatarUrl = u.AvatarUrl,
                 FollowersNumber = u.FollowFollowers.Count(),
-                FollowingsNumber = u.FollowFollowings.Count()
+                FollowingsNumber = u.FollowFollowings.Count(),
+                PostsNumber = u.Posts.Count(),
+                gender=u.Gender
             })
                 .FirstOrDefaultAsync(u => u.Id == id);
+        }
+
+        public async Task<User?> GetEntityByIdAsync(int id)
+        {
+            return await _context.Users.FirstOrDefaultAsync(u => u.Id == id);
+        }
+
+        public Task UpdateAsync(User user)
+        {
+            _context.Users.Update(user);
+            return Task.CompletedTask;
         }
     }
 }

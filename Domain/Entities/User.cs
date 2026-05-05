@@ -18,6 +18,7 @@ public partial class User
     public string? Bio { get; set; }
 
     public string? AvatarUrl { get; set; }
+    public int Gender { get; set; }
 
     public DateTime CreatedAt { get; set; }
 

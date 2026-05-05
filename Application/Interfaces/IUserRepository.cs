@@ -1,4 +1,4 @@
-﻿using Application.DTOs;
+using Application.DTOs;
 using Domain.Entities;
 using System;
 using System.Collections.Generic;
@@ -15,5 +15,7 @@ namespace Application.Interfaces
         public Task<User?> GetByEmailAsync(string email);
         public Task<bool> EmailExistsAsync(string email);
         public Task<UserDTO?> GetByIdAsync(int id);
+        public Task<User?> GetEntityByIdAsync(int id);
+        public Task UpdateAsync(User user);
     }
 }

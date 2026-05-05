@@ -150,5 +150,71 @@ namespace API.Controller
                 });
             }
         }
+
+        [HttpPut("profile")]
+        [Authorize]
+        public async Task<IActionResult> UpdateProfile([FromForm] UpdateProfileDTO dto)
+        {
+            try
+            {
+                int userId = HttpContext.User.GetUserId();
+                var user = await _unitOfWork.UserRepository.GetEntityByIdAsync(userId);
+                if (user == null)
+                {
+                    return NotFound(new { success = false, message = "User not found" });
+                }
+
+                if (!string.IsNullOrEmpty(dto.Username)) user.Username = dto.Username;
+                if (!string.IsNullOrEmpty(dto.FullName)) user.FullName = dto.FullName;
+                if (!string.IsNullOrEmpty(dto.Bio)) user.Bio = dto.Bio;
+                if (dto.Gender.HasValue) user.Gender = dto.Gender.Value;
+
+                if (dto.Avatar != null && dto.Avatar.Length > 0)
+                {
+                    string baseFolderPath = @"D:\LTDD_images\avatars";
+                    if (!Directory.Exists(baseFolderPath))
+                    {
+                        Directory.CreateDirectory(baseFolderPath);
+                    }
+
+                    string fileName = $"{userId}_{DateTime.UtcNow.Ticks}{Path.GetExtension(dto.Avatar.FileName)}";
+                    string filePath = Path.Combine(baseFolderPath, fileName);
+
+                    using (var stream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await dto.Avatar.CopyToAsync(stream);
+                    }
+
+                    user.AvatarUrl = $"/images/avatars/{fileName}";
+                }
+
+                await _unitOfWork.UserRepository.UpdateAsync(user);
+                await _unitOfWork.SaveChanges();
+
+                return Ok(new
+                {
+                    success = true,
+                    message = "Profile updated successfully",
+                    data = new
+                    {
+                        user.Id,
+                        user.Username,
+                        user.FullName,
+                        user.Bio,
+                        user.Gender,
+                        user.AvatarUrl
+                    }
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new
+                {
+                    success = false,
+                    message = "An error occurred while updating the profile",
+                    error = ex.Message
+                });
+            }
+        }
     }
 }

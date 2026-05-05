@@ -21,5 +21,7 @@ namespace Application.DTOs
         public string? AvatarUrl { get; set; }
         public int FollowersNumber { get; set; }
         public int FollowingsNumber { get; set; }
+        public int PostsNumber { get; set; }
+        public int gender { get; set; }
     }
 }
