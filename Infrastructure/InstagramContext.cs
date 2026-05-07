@@ -1,7 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
-using Domain.Entities;
+using System;
+using System.Collections.Generic;
 
 namespace API.Entities;
 
@@ -27,6 +27,7 @@ public partial class InstagramContext : DbContext
     public virtual DbSet<PostMedium> PostMedia { get; set; }
 
     public virtual DbSet<User> Users { get; set; }
+
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

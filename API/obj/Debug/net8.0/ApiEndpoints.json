@@ -75,8 +75,92 @@
   },
   {
     "ContainingType": "API.Controller.UserController",
+    "Method": "UpdatePost",
+    "RelativePath": "user/post/{postId}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "postId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "dto",
+        "Type": "API.DTOs.PostUpdateDTO",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "API.Controller.UserController",
+    "Method": "AddComment",
+    "RelativePath": "user/post/{postId}/comment",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "postId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "dto",
+        "Type": "API.DTOs.CommentRequestDTO",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "API.Controller.UserController",
+    "Method": "GetPostComments",
+    "RelativePath": "user/post/{postId}/comments",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "postId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "API.Controller.UserController",
+    "Method": "ToggleLike",
+    "RelativePath": "user/post/{postId}/like",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "postId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "API.Controller.UserController",
     "Method": "GetMyPosts",
     "RelativePath": "user/posts",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "API.Controller.UserController",
+    "Method": "GetMyPostsSummary",
+    "RelativePath": "user/postsSummary",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,

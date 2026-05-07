@@ -1,5 +1,6 @@
 using API.DTOs;
 using API.Extensions;
+using Application.DTOs;
 using Application.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -124,6 +125,32 @@ namespace API.Controller
             }
         }
 
+        [HttpGet("postsSummary")]
+        [Authorize]
+        public async Task<IActionResult> GetMyPostsSummary()
+        {
+            try
+            {
+                int userId = HttpContext.User.GetUserId();
+                var posts = await _unitOfWork.PostRepository.GetPostsSummaryByUserIdAsync(userId);
+
+                return Ok(new
+                {
+                    success = true,
+                    message = "Posts retrieved successfully",
+                    data = posts
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new
+                {
+                    success = false,
+                    message = "An error occurred while retrieving posts",
+                    error = ex.Message
+                });
+            }
+        }
         [HttpGet("posts")]
         [Authorize]
         public async Task<IActionResult> GetMyPosts()
@@ -212,6 +239,173 @@ namespace API.Controller
                 {
                     success = false,
                     message = "An error occurred while updating the profile",
+                    error = ex.Message
+                });
+            }
+        }
+
+        [HttpPut("post/{postId}")]
+        [Authorize]
+        public async Task<IActionResult> UpdatePost(int postId, [FromBody] PostUpdateDTO dto)
+        {
+            try
+            {
+                int userId = HttpContext.User.GetUserId();
+                var post = await _unitOfWork.PostRepository.GetEntityByIdAsync(postId);
+                
+                if (post == null)
+                {
+                    return NotFound(new { success = false, message = "Post not found" });
+                }
+
+                if (post.UserId != userId)
+                {
+                    return Forbid();
+                }
+
+                bool isUpdated = false;
+
+                if (dto.Caption != null && post.Caption != dto.Caption)
+                {
+                    post.Caption = dto.Caption;
+                    isUpdated = true;
+                }
+
+                if (post.Visibility != dto.Visibility)
+                {
+                    post.Visibility = dto.Visibility;
+                    isUpdated = true;
+                }
+
+                if (post.HideLikeCount != dto.HideLikeCount)
+                {
+                    post.HideLikeCount = dto.HideLikeCount;
+                    isUpdated = true;
+                }
+
+                if (post.DisableComments != dto.DisableComments)
+                {
+                    post.DisableComments = dto.DisableComments;
+                    isUpdated = true;
+                }
+
+                if (post.IsArchived != dto.IsArchived)
+                {
+                    post.IsArchived = dto.IsArchived;
+                    isUpdated = true;
+                }
+
+                if (isUpdated)
+                {
+                    await _unitOfWork.PostRepository.UpdateAsync(post);
+                    await _unitOfWork.SaveChanges();
+                }
+                var newPostData = await _unitOfWork.PostRepository.GetPostsByPostIdAsync(post.Id,userId);
+                return Ok(new
+                {
+                    success = true,
+                    message = isUpdated ? "Post updated successfully" : "No changes were made",
+                    data= newPostData
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new
+                {
+                    success = false,
+                    message = "An error occurred while updating the post",
+                    error = ex.Message
+                });
+            }
+        }
+
+        [HttpGet("post/{postId}/comments")]
+        [Authorize]
+        public async Task<IActionResult> GetPostComments(int postId)
+        {
+            try
+            {
+                var comments = await _unitOfWork.PostRepository.GetCommentsByPostIdAsync(postId);
+
+                return Ok(new
+                {
+                    success = true,
+                    message = "Comments retrieved successfully",
+                    data = comments
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new
+                {
+                    success = false,
+                    message = "An error occurred while retrieving comments",
+                    error = ex.Message
+                });
+            }
+        }
+
+        [HttpPost("post/{postId}/like")]
+        [Authorize]
+        public async Task<IActionResult> ToggleLike(int postId)
+        {
+            try
+            {
+                int userId = HttpContext.User.GetUserId();
+                bool isLiked = await _unitOfWork.PostRepository.ToggleLikeAsync(postId, userId);
+                await _unitOfWork.SaveChanges();
+
+                int likeCount = (await _unitOfWork.PostRepository.GetPostsByPostIdAsync(postId, userId))?.LikeCount ?? 0;
+
+                return Ok(new
+                {
+                    success = true,
+                    message = isLiked ? "Post liked" : "Post unliked",
+                    data = new
+                    {
+                        isLiked,
+                        likeCount
+                    }
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new
+                {
+                    success = false,
+                    message = "An error occurred while toggling like",
+                    error = ex.Message
+                });
+            }
+        }
+
+        [HttpPost("post/{postId}/comment")]
+        [Authorize]
+        public async Task<IActionResult> AddComment(int postId, [FromBody] CommentRequestDTO dto)
+        {
+            try
+            {
+                if (string.IsNullOrWhiteSpace(dto.Content))
+                {
+                    return BadRequest(new { success = false, message = "Comment content is required" });
+                }
+
+                int userId = HttpContext.User.GetUserId();
+                var comment = await _unitOfWork.PostRepository.AddCommentAsync(postId, userId, dto.Content);
+
+                return Ok(new
+                {
+                    success = true,
+                    message = "Comment added successfully",
+                    data = comment
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new
+                {
+                    success = false,
+                    message = "An error occurred while adding comment",
                     error = ex.Message
                 });
             }
