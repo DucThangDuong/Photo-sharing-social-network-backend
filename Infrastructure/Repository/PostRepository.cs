@@ -164,5 +164,69 @@ namespace Infrastructure.Repository
                 CreatedAt = comment.CreatedAt
             };
         }
+
+        public async Task<List<FeedPostDTO>> GetFeedPostsAsync(int currentUserId)
+        {
+            return await _context.Posts
+                .Where(p => !p.IsDeleted && !p.IsArchived)
+                .OrderByDescending(p => p.CreatedAt)
+                .Select(p => new FeedPostDTO
+                {
+                    Id = p.Id,
+                    UserId = p.UserId,
+                    Username = p.User.Username,
+                    AvatarUrl = p.User.AvatarUrl,
+                    Caption = p.Caption,
+                    CreatedAt = p.CreatedAt,
+                    Visibility = p.Visibility,
+                    HideLikeCount = p.HideLikeCount,
+                    DisableComments = p.DisableComments,
+                    IsArchived = p.IsArchived,
+                    LikeCount = p.Likes.Count(),
+                    CommentCount = p.Comments.Count(),
+                    IsLikedByCurrentUser = p.Likes.Any(l => l.UserId == currentUserId),
+                    PostMedia = p.PostMedia.Select(pm => new PostSummaryMediumDTO
+                    {
+                        MediaUrl = pm.MediaUrl
+                    }).ToList()
+                })
+                .ToListAsync();
+        }
+
+        public async Task<List<PostSummaryDTO>> GetTrendingPostsAsync(int limit = 10)
+        {
+            return await _context.Posts
+                .Where(p => !p.IsDeleted && !p.IsArchived)
+                .OrderByDescending(p => p.Likes.Count())
+                .ThenByDescending(p => p.CreatedAt)
+                .Take(limit)
+                .Select(p => new PostSummaryDTO
+                {
+                    Id = p.Id,
+                    Caption = p.Caption,
+                    PostMedia = p.PostMedia.Select(pm => new PostSummaryMediumDTO
+                    {
+                        MediaUrl = pm.MediaUrl
+                    }).ToList()
+                })
+                .ToListAsync();
+        }
+
+        public async Task<List<PostSummaryDTO>> SearchPostsByCaptionAsync(string keyword)
+        {
+            return await _context.Posts
+                .Where(p => !p.IsDeleted && !p.IsArchived && p.Caption != null && p.Caption.Contains(keyword))
+                .OrderByDescending(p => p.CreatedAt)
+                .Select(p => new PostSummaryDTO
+                {
+                    Id = p.Id,
+                    Caption = p.Caption,
+                    PostMedia = p.PostMedia.Select(pm => new PostSummaryMediumDTO
+                    {
+                        MediaUrl = pm.MediaUrl
+                    }).ToList()
+                })
+                .ToListAsync();
+        }
     }
 }

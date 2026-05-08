@@ -17,5 +17,10 @@ namespace Application.Interfaces
         public Task<UserDTO?> GetByIdAsync(int id);
         public Task<User?> GetEntityByIdAsync(int id);
         public Task UpdateAsync(User user);
+        public Task<List<UserSummaryFollowDTO>> GetSuggestedUsersAsync(int currentUserId, int limit = 10);
+        public Task<List<UserSummaryDTO>> SearchUsersAsync(string keyword);
+        public Task<bool> FollowUserAsync(int followerId, int followingId);
+        public Task<List<UserSummaryDTO>> GetFollowersAsync(int userId);
+        public Task<List<UserSummaryFollowDTO>> GetFollowingAsync(int userId);
     }
 }

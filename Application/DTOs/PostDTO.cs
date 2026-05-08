@@ -29,6 +29,13 @@ namespace Application.DTOs
         public bool IsArchived { get; set; }
     }
 
+    public class FeedPostDTO : PostDetailDTO
+    {
+        public int UserId { get; set; }
+        public string Username { get; set; } = null!;
+        public string? AvatarUrl { get; set; }
+    }
+
     public class CommentDTO
     {
         public int Id { get; set; }

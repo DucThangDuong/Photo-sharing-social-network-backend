@@ -410,5 +410,231 @@ namespace API.Controller
                 });
             }
         }
+
+        [HttpGet("feed")]
+        [Authorize]
+        public async Task<IActionResult> GetFeed()
+        {
+            try
+            {
+                int userId = HttpContext.User.GetUserId();
+                var posts = await _unitOfWork.PostRepository.GetFeedPostsAsync(userId);
+
+                return Ok(new
+                {
+                    success = true,
+                    message = "Feed retrieved successfully",
+                    data = posts
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new
+                {
+                    success = false,
+                    message = "An error occurred while retrieving feed",
+                    error = ex.Message
+                });
+            }
+        }
+
+        [HttpGet("suggestions")]
+        [Authorize]
+        public async Task<IActionResult> GetSuggestedUsers()
+        {
+            try
+            {
+                int userId = HttpContext.User.GetUserId();
+                var suggestedUsers = await _unitOfWork.UserRepository.GetSuggestedUsersAsync(userId, 10);
+
+                return Ok(new
+                {
+                    success = true,
+                    message = "Suggested users retrieved successfully",
+                    data = suggestedUsers
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new
+                {
+                    success = false,
+                    message = "An error occurred while retrieving suggested users",
+                    error = ex.Message
+                });
+            }
+        }
+
+        [HttpGet("trending")]
+        [Authorize]
+        public async Task<IActionResult> GetTrendingPosts()
+        {
+            try
+            {
+                var posts = await _unitOfWork.PostRepository.GetTrendingPostsAsync(10);
+
+                return Ok(new
+                {
+                    success = true,
+                    message = "Trending posts retrieved successfully",
+                    data = posts
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new
+                {
+                    success = false,
+                    message = "An error occurred while retrieving trending posts",
+                    error = ex.Message
+                });
+            }
+        }
+
+        [HttpGet("search/users")]
+        [Authorize]
+        public async Task<IActionResult> SearchUsers([FromQuery] string keyword)
+        {
+            try
+            {
+                if (string.IsNullOrWhiteSpace(keyword))
+                {
+                    return BadRequest(new { success = false, message = "Keyword is required" });
+                }
+
+                var users = await _unitOfWork.UserRepository.SearchUsersAsync(keyword);
+
+                return Ok(new
+                {
+                    success = true,
+                    message = "Users search completed",
+                    data = users
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new
+                {
+                    success = false,
+                    message = "An error occurred while searching users",
+                    error = ex.Message
+                });
+            }
+        }
+
+        [HttpGet("search/posts")]
+        [Authorize]
+        public async Task<IActionResult> SearchPosts([FromQuery] string keyword)
+        {
+            try
+            {
+                if (string.IsNullOrWhiteSpace(keyword))
+                {
+                    return BadRequest(new { success = false, message = "Keyword is required" });
+                }
+
+                var posts = await _unitOfWork.PostRepository.SearchPostsByCaptionAsync(keyword);
+
+                return Ok(new
+                {
+                    success = true,
+                    message = "Posts search completed",
+                    data = posts
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new
+                {
+                    success = false,
+                    message = "An error occurred while searching posts",
+                    error = ex.Message
+                });
+            }
+        }
+
+        [HttpPost("follow/{followingId}")]
+        [Authorize]
+        public async Task<IActionResult> FollowUser(int followingId)
+        {
+            try
+            {
+                int followerId = HttpContext.User.GetUserId();
+
+                if (followerId == followingId)
+                {
+                    return BadRequest(new { success = false, message = "You cannot follow yourself" });
+                }
+
+                bool isFollowed = await _unitOfWork.UserRepository.FollowUserAsync(followerId, followingId);
+                await _unitOfWork.SaveChanges();
+
+                return Ok(new
+                {
+                    success = true,
+                    message = isFollowed ? "Followed successfully" : "Unfollowed successfully",
+                    data = new { isFollowed }
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new
+                {
+                    success = false,
+                    message = "An error occurred while processing the follow request",
+                    error = ex.Message
+                });
+            }
+        }
+
+        [HttpGet("{userId}/followers")]
+        [Authorize]
+        public async Task<IActionResult> GetFollowers(int userId)
+        {
+            try
+            {
+                var followers = await _unitOfWork.UserRepository.GetFollowersAsync(userId);
+                return Ok(new
+                {
+                    success = true,
+                    message = "Followers retrieved successfully",
+                    data = followers
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new
+                {
+                    success = false,
+                    message = "An error occurred while retrieving followers",
+                    error = ex.Message
+                });
+            }
+        }
+
+        [HttpGet("{userId}/following")]
+        [Authorize]
+        public async Task<IActionResult> GetFollowing(int userId)
+        {
+            try
+            {
+                var following = await _unitOfWork.UserRepository.GetFollowingAsync(userId);
+                return Ok(new
+                {
+                    success = true,
+                    message = "Following list retrieved successfully",
+                    data = following
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new
+                {
+                    success = false,
+                    message = "An error occurred while retrieving following list",
+                    error = ex.Message
+                });
+            }
+        }
     }
 }

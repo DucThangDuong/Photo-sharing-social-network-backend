@@ -16,5 +16,8 @@ namespace Application.Interfaces
         Task<List<CommentDTO>> GetCommentsByPostIdAsync(int postId);
         Task<bool> ToggleLikeAsync(int postId, int userId);
         Task<CommentDTO> AddCommentAsync(int postId, int userId, string content);
+        Task<List<FeedPostDTO>> GetFeedPostsAsync(int currentUserId);
+        Task<List<PostSummaryDTO>> GetTrendingPostsAsync(int limit = 10);
+        Task<List<PostSummaryDTO>> SearchPostsByCaptionAsync(string keyword);
     }
 }

@@ -49,6 +49,64 @@
   },
   {
     "ContainingType": "API.Controller.UserController",
+    "Method": "GetFollowers",
+    "RelativePath": "user/{userId}/followers",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "userId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "API.Controller.UserController",
+    "Method": "GetFollowing",
+    "RelativePath": "user/{userId}/following",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "userId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "API.Controller.UserController",
+    "Method": "GetFeed",
+    "RelativePath": "user/feed",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "API.Controller.UserController",
+    "Method": "FollowUser",
+    "RelativePath": "user/follow/{followingId}",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "followingId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "API.Controller.UserController",
     "Method": "CreatePost",
     "RelativePath": "user/newPost",
     "HttpMethod": "POST",
@@ -211,6 +269,58 @@
         "IsRequired": false
       }
     ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "API.Controller.UserController",
+    "Method": "SearchPosts",
+    "RelativePath": "user/search/posts",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "keyword",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "API.Controller.UserController",
+    "Method": "SearchUsers",
+    "RelativePath": "user/search/users",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "keyword",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "API.Controller.UserController",
+    "Method": "GetSuggestedUsers",
+    "RelativePath": "user/suggestions",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "API.Controller.UserController",
+    "Method": "GetTrendingPosts",
+    "RelativePath": "user/trending",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
     "ReturnTypes": []
   }
 ]
