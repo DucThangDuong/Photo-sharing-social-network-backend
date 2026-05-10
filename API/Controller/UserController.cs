@@ -60,7 +60,7 @@ namespace API.Controller
             {
                 int userId = HttpContext.User.GetUserId();
 
-                var post = new Domain.Entities.Post
+                var post = new API.Entities.Post
                 {
                     UserId = userId,
                     Caption = postDto.Caption,
@@ -94,7 +94,7 @@ namespace API.Controller
                                 await image.CopyToAsync(stream);
                             }
 
-                            post.PostMedia.Add(new Domain.Entities.PostMedium
+                            post.PostMedia.Add(new API.Entities.PostMedium
                             {
                                 MediaUrl = $"/images/{folderName}/{image.FileName}",
                                 SortOrder = currentSortOrder++,

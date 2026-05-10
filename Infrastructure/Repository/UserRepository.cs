@@ -1,14 +1,13 @@
 using API.Entities;
 using Application.DTOs;
 using Application.Interfaces;
-using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
+using Infrastructure.Context;
 namespace Infrastructure.Repository
 {
     public class UserRepository : IUserRepository

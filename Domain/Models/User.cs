@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Domain.Entities;
+namespace API.Entities;
 
 public partial class User
 {
@@ -18,6 +18,7 @@ public partial class User
     public string? Bio { get; set; }
 
     public string? AvatarUrl { get; set; }
+
     public int Gender { get; set; }
 
     public DateTime CreatedAt { get; set; }
@@ -31,4 +32,8 @@ public partial class User
     public virtual ICollection<Like> Likes { get; set; } = new List<Like>();
 
     public virtual ICollection<Post> Posts { get; set; } = new List<Post>();
+
+    public virtual ICollection<Story> Stories { get; set; } = new List<Story>();
+
+    public virtual ICollection<StoryView> StoryViews { get; set; } = new List<StoryView>();
 }

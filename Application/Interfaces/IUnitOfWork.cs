@@ -10,6 +10,7 @@ namespace Application.Interfaces
     {
         IUserRepository UserRepository { get; }
         IPostRepository PostRepository { get; }
+        IStoryRepository StoryRepository { get; }
         Task SaveChanges();
     }
 }
