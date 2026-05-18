@@ -6,6 +6,7 @@ namespace Application.Interfaces
     public interface IStoryRepository
     {
         Task<StoryDTO> AddStoryAsync(int userId, string mediaUrl);
-        Task<System.Collections.Generic.List<UserStoryDTO>> GetActiveStoriesAsync(int currentUserId);
+        Task<List<UserStoryDTO>> GetActiveStoriesAsync(int guestId,int currentUserId);
+        Task CreateStoryView(int storyId, int viewerId);
     }
 }

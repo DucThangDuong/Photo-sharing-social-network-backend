@@ -52,66 +52,27 @@ namespace API.Controller
                 });
             }
         }
-        [HttpPost("newPost")]
+        [HttpGet("{userIdFind}")]
         [Authorize]
-        public async Task<IActionResult> CreatePost([FromForm] PostDTO postDto)
+        public async Task<IActionResult> GetProfileOfUser(int userIdFind)
         {
             try
             {
                 int userId = HttpContext.User.GetUserId();
-
-                var post = new API.Entities.Post
+                var user = await _unitOfWork.UserRepository.GetByIdAsync(userIdFind);
+                if (user == null)
                 {
-                    UserId = userId,
-                    Caption = postDto.Caption,
-                    CreatedAt = DateTime.UtcNow
-                };
-
-                if (postDto.Images != null && postDto.Images.Count > 0)
-                {
-                    string baseFolderPath = @"D:\LTDD_images";
-                    if (!Directory.Exists(baseFolderPath))
+                    return NotFound(new
                     {
-                        Directory.CreateDirectory(baseFolderPath);
-                    }
-
-                    string folderName = $"{userId}_{DateTime.UtcNow.Ticks}";
-                    string folderPath = Path.Combine(baseFolderPath, folderName);
-                    
-                    if (!Directory.Exists(folderPath))
-                    {
-                        Directory.CreateDirectory(folderPath);
-                    }
-
-                    int currentSortOrder = 1;
-                    foreach (var image in postDto.Images)
-                    {
-                        if (image.Length > 0)
-                        {
-                            string filePath = Path.Combine(folderPath, image.FileName);
-                            using (var stream = new FileStream(filePath, FileMode.Create))
-                            {
-                                await image.CopyToAsync(stream);
-                            }
-
-                            post.PostMedia.Add(new API.Entities.PostMedium
-                            {
-                                MediaUrl = $"/images/{folderName}/{image.FileName}",
-                                SortOrder = currentSortOrder++,
-                                CreatedAt = DateTime.UtcNow
-                            });
-                        }
-                    }
+                        success = false,
+                        message = "User not found"
+                    });
                 }
-
-                await _unitOfWork.PostRepository.AddAsync(post);
-                await _unitOfWork.SaveChanges();
-
                 return Ok(new
                 {
                     success = true,
-                    message = "Post created successfully",
-                    data = post
+                    message = "User profile retrieved successfully",
+                    data = user
                 });
             }
             catch (Exception ex)
@@ -119,12 +80,11 @@ namespace API.Controller
                 return StatusCode(StatusCodes.Status500InternalServerError, new
                 {
                     success = false,
-                    message = "An error occurred while creating the post",
+                    message = "An error occurred while retrieving the user profile",
                     error = ex.Message
                 });
             }
         }
-
         [HttpGet("postsSummary")]
         [Authorize]
         public async Task<IActionResult> GetMyPostsSummary()
@@ -132,6 +92,31 @@ namespace API.Controller
             try
             {
                 int userId = HttpContext.User.GetUserId();
+                var posts = await _unitOfWork.PostRepository.GetPostsSummaryByUserIdAsync(userId);
+
+                return Ok(new
+                {
+                    success = true,
+                    message = "Posts retrieved successfully",
+                    data = posts
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new
+                {
+                    success = false,
+                    message = "An error occurred while retrieving posts",
+                    error = ex.Message
+                });
+            }
+        }
+        [HttpGet("postsSummary/{userId}")]
+        [Authorize]
+        public async Task<IActionResult> GetPostsSummary(int userId)
+        {
+            try
+            {
                 var posts = await _unitOfWork.PostRepository.GetPostsSummaryByUserIdAsync(userId);
 
                 return Ok(new
@@ -160,6 +145,31 @@ namespace API.Controller
                 int userId = HttpContext.User.GetUserId();
                 var posts = await _unitOfWork.PostRepository.GetPostsByUserIdAsync(userId);
 
+                return Ok(new
+                {
+                    success = true,
+                    message = "Posts retrieved successfully",
+                    data = posts
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new
+                {
+                    success = false,
+                    message = "An error occurred while retrieving posts",
+                    error = ex.Message
+                });
+            }
+        }
+        [HttpGet("{userId}/posts")]
+        [Authorize]
+        public async Task<IActionResult> GetPostsUserId(int userId)
+        {
+            try
+            {
+                int myId = HttpContext.User.GetUserId();
+                var posts = await _unitOfWork.PostRepository.GetPostsByUserIdAsync(userId, myId);
                 return Ok(new
                 {
                     success = true,
@@ -319,85 +329,38 @@ namespace API.Controller
             }
         }
 
-        [HttpGet("post/{postId}/comments")]
+        [HttpDelete("post/{postId}")]
         [Authorize]
-        public async Task<IActionResult> GetPostComments(int postId)
-        {
-            try
-            {
-                var comments = await _unitOfWork.PostRepository.GetCommentsByPostIdAsync(postId);
-
-                return Ok(new
-                {
-                    success = true,
-                    message = "Comments retrieved successfully",
-                    data = comments
-                });
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, new
-                {
-                    success = false,
-                    message = "An error occurred while retrieving comments",
-                    error = ex.Message
-                });
-            }
-        }
-
-        [HttpPost("post/{postId}/like")]
-        [Authorize]
-        public async Task<IActionResult> ToggleLike(int postId)
+        public async Task<IActionResult> DeletePost(int postId)
         {
             try
             {
                 int userId = HttpContext.User.GetUserId();
-                bool isLiked = await _unitOfWork.PostRepository.ToggleLikeAsync(postId, userId);
-                await _unitOfWork.SaveChanges();
-
-                int likeCount = (await _unitOfWork.PostRepository.GetPostsByPostIdAsync(postId, userId))?.LikeCount ?? 0;
-
-                return Ok(new
+                var post = await _unitOfWork.PostRepository.GetEntityByIdAsync(postId);
+                
+                if (post == null)
                 {
-                    success = true,
-                    message = isLiked ? "Post liked" : "Post unliked",
-                    data = new
-                    {
-                        isLiked,
-                        likeCount
-                    }
-                });
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, new
-                {
-                    success = false,
-                    message = "An error occurred while toggling like",
-                    error = ex.Message
-                });
-            }
-        }
-
-        [HttpPost("post/{postId}/comment")]
-        [Authorize]
-        public async Task<IActionResult> AddComment(int postId, [FromBody] CommentRequestDTO dto)
-        {
-            try
-            {
-                if (string.IsNullOrWhiteSpace(dto.Content))
-                {
-                    return BadRequest(new { success = false, message = "Comment content is required" });
+                    return NotFound(new { success = false, message = "Post not found" });
                 }
 
-                int userId = HttpContext.User.GetUserId();
-                var comment = await _unitOfWork.PostRepository.AddCommentAsync(postId, userId, dto.Content);
+                if (post.UserId != userId)
+                {
+                    return Forbid();
+                }
+
+                if (post.IsDeleted)
+                {
+                    return BadRequest(new { success = false, message = "Post is already deleted" });
+                }
+
+                post.IsDeleted = true;
+                await _unitOfWork.PostRepository.UpdateAsync(post);
+                await _unitOfWork.SaveChanges();
 
                 return Ok(new
                 {
                     success = true,
-                    message = "Comment added successfully",
-                    data = comment
+                    message = "Post deleted successfully"
                 });
             }
             catch (Exception ex)
@@ -405,7 +368,7 @@ namespace API.Controller
                 return StatusCode(StatusCodes.Status500InternalServerError, new
                 {
                     success = false,
-                    message = "An error occurred while adding comment",
+                    message = "An error occurred while deleting the post",
                     error = ex.Message
                 });
             }
@@ -465,32 +428,6 @@ namespace API.Controller
             }
         }
 
-        [HttpGet("trending")]
-        [Authorize]
-        public async Task<IActionResult> GetTrendingPosts()
-        {
-            try
-            {
-                var posts = await _unitOfWork.PostRepository.GetTrendingPostsAsync(10);
-
-                return Ok(new
-                {
-                    success = true,
-                    message = "Trending posts retrieved successfully",
-                    data = posts
-                });
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, new
-                {
-                    success = false,
-                    message = "An error occurred while retrieving trending posts",
-                    error = ex.Message
-                });
-            }
-        }
-
         [HttpGet("search/users")]
         [Authorize]
         public async Task<IActionResult> SearchUsers([FromQuery] string keyword)
@@ -517,37 +454,6 @@ namespace API.Controller
                 {
                     success = false,
                     message = "An error occurred while searching users",
-                    error = ex.Message
-                });
-            }
-        }
-
-        [HttpGet("search/posts")]
-        [Authorize]
-        public async Task<IActionResult> SearchPosts([FromQuery] string keyword)
-        {
-            try
-            {
-                if (string.IsNullOrWhiteSpace(keyword))
-                {
-                    return BadRequest(new { success = false, message = "Keyword is required" });
-                }
-
-                var posts = await _unitOfWork.PostRepository.SearchPostsByCaptionAsync(keyword);
-
-                return Ok(new
-                {
-                    success = true,
-                    message = "Posts search completed",
-                    data = posts
-                });
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, new
-                {
-                    success = false,
-                    message = "An error occurred while searching posts",
                     error = ex.Message
                 });
             }

@@ -25,15 +25,15 @@ namespace Infrastructure.Repository
         public async Task<List<PostSummaryDTO>> GetPostsSummaryByUserIdAsync(int userId)
         {
             return await _context.Posts
-                .Where(p => p.UserId == userId)
+                .Where(p => p.UserId == userId && p.IsDeleted != true)
                 .OrderByDescending(p => p.CreatedAt)
                 .Select(p => new PostSummaryDTO
                 {
                     Id = p.Id,
                     Caption = p.Caption,
                     PostMedia = p.PostMedia.Select(pm => new PostSummaryMediumDTO
-                    { 
-                        MediaUrl = pm.MediaUrl 
+                    {
+                        MediaUrl = pm.MediaUrl
                     }).ToList()
                 })
                 .ToListAsync();
@@ -41,7 +41,7 @@ namespace Infrastructure.Repository
         public async Task<List<PostDetailDTO>> GetPostsByUserIdAsync(int userId)
         {
             return await _context.Posts
-                .Where(p => p.UserId == userId)
+                .Where(p => p.UserId == userId && p.IsDeleted != true)
                 .OrderByDescending(p => p.CreatedAt)
                 .Select(p => new PostDetailDTO
                 {
@@ -123,7 +123,7 @@ namespace Infrastructure.Repository
             if (existingLike != null)
             {
                 _context.Likes.Remove(existingLike);
-                return false; 
+                return false;
             }
             else
             {
@@ -220,6 +220,41 @@ namespace Infrastructure.Repository
                 {
                     Id = p.Id,
                     Caption = p.Caption,
+                    PostMedia = p.PostMedia.Select(pm => new PostSummaryMediumDTO
+                    {
+                        MediaUrl = pm.MediaUrl
+                    }).ToList()
+                })
+                .ToListAsync();
+        }
+
+        public async Task<Post> UpdateCaptionPost(int postId, string newCaption)
+        {
+            var post = await _context.Posts.FirstOrDefaultAsync(p => p.Id == postId);
+            if (post != null)
+            {
+                post.Caption = newCaption;
+            }
+            return post!;
+        }
+
+        public async Task<List<PostDetailDTO>> GetPostsByUserIdAsync(int userId, int myId)
+        {
+            return await _context.Posts
+                .Where(p => p.UserId == userId && p.IsDeleted != true)
+                .OrderByDescending(p => p.CreatedAt)
+                .Select(p => new PostDetailDTO
+                {
+                    Id = p.Id,
+                    Caption = p.Caption,
+                    CreatedAt = p.CreatedAt,
+                    Visibility = p.Visibility,
+                    HideLikeCount = p.HideLikeCount,
+                    DisableComments = p.DisableComments,
+                    LikeCount = p.Likes.Count(),
+                    CommentCount = p.Comments.Count(),
+                    IsLikedByCurrentUser = p.Likes.Any(l => l.UserId == myId),
+                    IsArchived = p.IsArchived,
                     PostMedia = p.PostMedia.Select(pm => new PostSummaryMediumDTO
                     {
                         MediaUrl = pm.MediaUrl

@@ -48,6 +48,148 @@
     "ReturnTypes": []
   },
   {
+    "ContainingType": "API.Controller.PostController",
+    "Method": "GetPostById",
+    "RelativePath": "post/{postId}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "postId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "API.Controller.PostController",
+    "Method": "AddComment",
+    "RelativePath": "post/{postId}/comment",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "postId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "dto",
+        "Type": "API.DTOs.CommentRequestDTO",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "API.Controller.PostController",
+    "Method": "GetPostComments",
+    "RelativePath": "post/{postId}/comments",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "postId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "API.Controller.PostController",
+    "Method": "ToggleLike",
+    "RelativePath": "post/{postId}/like",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "postId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "API.Controller.PostController",
+    "Method": "CreatePost",
+    "RelativePath": "post/newPost",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "Caption",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "Images",
+        "Type": "System.Collections.Generic.List\u00601[[Microsoft.AspNetCore.Http.IFormFile, Microsoft.AspNetCore.Http.Features, Version=8.0.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60]]",
+        "IsRequired": false
+      },
+      {
+        "Name": "SortOrder",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "API.Controller.PostController",
+    "Method": "SearchPosts",
+    "RelativePath": "post/search/posts",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "keyword",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "API.Controller.PostController",
+    "Method": "GetTrendingPosts",
+    "RelativePath": "post/trending",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "API.Controller.PostController",
+    "Method": "UpdatePost",
+    "RelativePath": "post/update/{postId}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "postId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "dto",
+        "Type": "API.DTOs.PostUpdateCaptionDTO",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
     "ContainingType": "API.Controller.StoryController",
     "Method": "GetActiveStories",
     "RelativePath": "story/active",
@@ -99,6 +241,38 @@
     "ReturnTypes": []
   },
   {
+    "ContainingType": "API.Controller.StoryController",
+    "Method": "GetGuestActiveStories",
+    "RelativePath": "story/guest/{userIdguest}/active",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "userIdguest",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "API.Controller.StoryController",
+    "Method": "CreateStoryView",
+    "RelativePath": "story/view/{storyId}",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "storyId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
     "ContainingType": "API.Controller.UserController",
     "Method": "GetFollowers",
     "RelativePath": "user/{userId}/followers",
@@ -124,6 +298,38 @@
     "Parameters": [
       {
         "Name": "userId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "API.Controller.UserController",
+    "Method": "GetPostsUserId",
+    "RelativePath": "user/{userId}/posts",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "userId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "API.Controller.UserController",
+    "Method": "GetProfileOfUser",
+    "RelativePath": "user/{userIdFind}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "userIdFind",
         "Type": "System.Int32",
         "IsRequired": true
       }
@@ -158,32 +364,6 @@
   },
   {
     "ContainingType": "API.Controller.UserController",
-    "Method": "CreatePost",
-    "RelativePath": "user/newPost",
-    "HttpMethod": "POST",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "Caption",
-        "Type": "System.String",
-        "IsRequired": false
-      },
-      {
-        "Name": "Images",
-        "Type": "System.Collections.Generic.List\u00601[[Microsoft.AspNetCore.Http.IFormFile, Microsoft.AspNetCore.Http.Features, Version=8.0.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60]]",
-        "IsRequired": false
-      },
-      {
-        "Name": "SortOrder",
-        "Type": "System.Int32",
-        "IsRequired": false
-      }
-    ],
-    "ReturnTypes": []
-  },
-  {
-    "ContainingType": "API.Controller.UserController",
     "Method": "UpdatePost",
     "RelativePath": "user/post/{postId}",
     "HttpMethod": "PUT",
@@ -205,46 +385,9 @@
   },
   {
     "ContainingType": "API.Controller.UserController",
-    "Method": "AddComment",
-    "RelativePath": "user/post/{postId}/comment",
-    "HttpMethod": "POST",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "postId",
-        "Type": "System.Int32",
-        "IsRequired": true
-      },
-      {
-        "Name": "dto",
-        "Type": "API.DTOs.CommentRequestDTO",
-        "IsRequired": true
-      }
-    ],
-    "ReturnTypes": []
-  },
-  {
-    "ContainingType": "API.Controller.UserController",
-    "Method": "GetPostComments",
-    "RelativePath": "user/post/{postId}/comments",
-    "HttpMethod": "GET",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "postId",
-        "Type": "System.Int32",
-        "IsRequired": true
-      }
-    ],
-    "ReturnTypes": []
-  },
-  {
-    "ContainingType": "API.Controller.UserController",
-    "Method": "ToggleLike",
-    "RelativePath": "user/post/{postId}/like",
-    "HttpMethod": "POST",
+    "Method": "DeletePost",
+    "RelativePath": "user/post/{postId}",
+    "HttpMethod": "DELETE",
     "IsController": true,
     "Order": 0,
     "Parameters": [
@@ -274,6 +417,22 @@
     "IsController": true,
     "Order": 0,
     "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "API.Controller.UserController",
+    "Method": "GetPostsSummary",
+    "RelativePath": "user/postsSummary/{userId}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "userId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
     "ReturnTypes": []
   },
   {
@@ -324,22 +483,6 @@
   },
   {
     "ContainingType": "API.Controller.UserController",
-    "Method": "SearchPosts",
-    "RelativePath": "user/search/posts",
-    "HttpMethod": "GET",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "keyword",
-        "Type": "System.String",
-        "IsRequired": false
-      }
-    ],
-    "ReturnTypes": []
-  },
-  {
-    "ContainingType": "API.Controller.UserController",
     "Method": "SearchUsers",
     "RelativePath": "user/search/users",
     "HttpMethod": "GET",
@@ -358,16 +501,6 @@
     "ContainingType": "API.Controller.UserController",
     "Method": "GetSuggestedUsers",
     "RelativePath": "user/suggestions",
-    "HttpMethod": "GET",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [],
-    "ReturnTypes": []
-  },
-  {
-    "ContainingType": "API.Controller.UserController",
-    "Method": "GetTrendingPosts",
-    "RelativePath": "user/trending",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,

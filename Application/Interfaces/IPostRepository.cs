@@ -10,6 +10,7 @@ namespace Application.Interfaces
         Task AddAsync(Post post);
         Task<List<PostSummaryDTO>> GetPostsSummaryByUserIdAsync(int userId);
         Task<List<PostDetailDTO>> GetPostsByUserIdAsync(int userId);
+        Task<List<PostDetailDTO>> GetPostsByUserIdAsync(int userId,int myId);
         Task<Post?> GetEntityByIdAsync(int postId);
         Task UpdateAsync(Post post);
         Task<PostDetailDTO?> GetPostsByPostIdAsync(int PostId, int userId);
@@ -19,5 +20,6 @@ namespace Application.Interfaces
         Task<List<FeedPostDTO>> GetFeedPostsAsync(int currentUserId);
         Task<List<PostSummaryDTO>> GetTrendingPostsAsync(int limit = 10);
         Task<List<PostSummaryDTO>> SearchPostsByCaptionAsync(string keyword);
+        Task<Post> UpdateCaptionPost(int postId, string newCaption);
     }
 }

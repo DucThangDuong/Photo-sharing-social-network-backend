@@ -9,6 +9,7 @@ namespace Application.DTOs
         public string MediaUrl { get; set; } = null!;
         public DateTime CreatedAt { get; set; }
         public DateTime ExpiresAt { get; set; }
+        public bool IsSeen { get; set; }
     }
 
     public class UserStoryDTO
@@ -16,6 +17,7 @@ namespace Application.DTOs
         public int UserId { get; set; }
         public string Username { get; set; } = null!;
         public string? AvatarUrl { get; set; }
+        public bool HasSeen { get; set; }
         public List<StoryDTO> Stories { get; set; } = new List<StoryDTO>();
     }
 }

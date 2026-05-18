@@ -7,20 +7,16 @@
       "RelativeMoniker": "D:0:0:{CBFA08EA-AECE-205F-7B85-326FD0B81BAD}|API\\API.csproj|solutionrelative:api\\controller\\storycontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{5872AEB3-BAA3-FE31-B0EB-0FB6DBEDCF83}|Infrastructure\\Infrastructure.csproj|d:\\y3-hk2\\ltdd\\backend\\api\\infrastructure\\repository\\unitofwork.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{5872AEB3-BAA3-FE31-B0EB-0FB6DBEDCF83}|Infrastructure\\Infrastructure.csproj|solutionrelative:infrastructure\\repository\\unitofwork.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{5872AEB3-BAA3-FE31-B0EB-0FB6DBEDCF83}|Infrastructure\\Infrastructure.csproj|d:\\y3-hk2\\ltdd\\backend\\api\\infrastructure\\repository\\storyrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{5872AEB3-BAA3-FE31-B0EB-0FB6DBEDCF83}|Infrastructure\\Infrastructure.csproj|solutionrelative:infrastructure\\repository\\storyrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{F80C4E72-27A0-12B5-0634-DD5C11CFB0C1}|Application\\Application.csproj|d:\\y3-hk2\\ltdd\\backend\\api\\application\\interfaces\\istoryrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{F80C4E72-27A0-12B5-0634-DD5C11CFB0C1}|Application\\Application.csproj|solutionrelative:application\\interfaces\\istoryrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{CBFA08EA-AECE-205F-7B85-326FD0B81BAD}|API\\API.csproj|d:\\y3-hk2\\ltdd\\backend\\api\\api\\controller\\usercontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{CBFA08EA-AECE-205F-7B85-326FD0B81BAD}|API\\API.csproj|solutionrelative:api\\controller\\usercontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{CBFA08EA-AECE-205F-7B85-326FD0B81BAD}|API\\API.csproj|d:\\y3-hk2\\ltdd\\backend\\api\\api\\controller\\authcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{CBFA08EA-AECE-205F-7B85-326FD0B81BAD}|API\\API.csproj|solutionrelative:api\\controller\\authcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{CBFA08EA-AECE-205F-7B85-326FD0B81BAD}|API\\API.csproj|d:\\y3-hk2\\ltdd\\backend\\api\\api\\controller\\postcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{CBFA08EA-AECE-205F-7B85-326FD0B81BAD}|API\\API.csproj|solutionrelative:api\\controller\\postcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -29,9 +25,13 @@
       "VerticalTabListWidth": 256,
       "DocumentGroups": [
         {
-          "DockedWidth": 200,
-          "SelectedChildIndex": 15,
+          "DockedWidth": 539,
+          "SelectedChildIndex": 14,
           "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{e1b7d1f8-9b3c-49b1-8f4f-bfc63a88835d}"
+            },
             {
               "$type": "Bookmark",
               "Name": "ST:128:0:{1fc202d4-d401-403c-9834-5b218574bb67}"
@@ -83,38 +83,15 @@
             {
               "$type": "Document",
               "DocumentIndex": 1,
-              "Title": "UnitOfWork.cs",
-              "DocumentMoniker": "D:\\Y3-HK2\\LTDD\\BackEnd\\API\\Infrastructure\\Repository\\UnitOfWork.cs",
-              "RelativeDocumentMoniker": "Infrastructure\\Repository\\UnitOfWork.cs",
-              "ToolTip": "D:\\Y3-HK2\\LTDD\\BackEnd\\API\\Infrastructure\\Repository\\UnitOfWork.cs",
-              "RelativeToolTip": "Infrastructure\\Repository\\UnitOfWork.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA8AAAAPAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-09T06:10:31.978Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 2,
               "Title": "StoryRepository.cs",
               "DocumentMoniker": "D:\\Y3-HK2\\LTDD\\BackEnd\\API\\Infrastructure\\Repository\\StoryRepository.cs",
               "RelativeDocumentMoniker": "Infrastructure\\Repository\\StoryRepository.cs",
               "ToolTip": "D:\\Y3-HK2\\LTDD\\BackEnd\\API\\Infrastructure\\Repository\\StoryRepository.cs",
               "RelativeToolTip": "Infrastructure\\Repository\\StoryRepository.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAsAAAAZAAAAAAAAAA==",
+              "ViewState": "AgIAACoAAAAAAAAAAAAYwEsAAAAyAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-09T06:10:23.89Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "IStoryRepository.cs",
-              "DocumentMoniker": "D:\\Y3-HK2\\LTDD\\BackEnd\\API\\Application\\Interfaces\\IStoryRepository.cs",
-              "RelativeDocumentMoniker": "Application\\Interfaces\\IStoryRepository.cs",
-              "ToolTip": "D:\\Y3-HK2\\LTDD\\BackEnd\\API\\Application\\Interfaces\\IStoryRepository.cs",
-              "RelativeToolTip": "Application\\Interfaces\\IStoryRepository.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-09T06:10:16.661Z"
+              "WhenOpened": "2026-05-18T10:02:11.236Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
@@ -124,27 +101,41 @@
               "RelativeDocumentMoniker": "API\\Controller\\StoryController.cs",
               "ToolTip": "D:\\Y3-HK2\\LTDD\\BackEnd\\API\\API\\Controller\\StoryController.cs",
               "RelativeToolTip": "API\\Controller\\StoryController.cs",
-              "ViewState": "AgIAACIAAAAAAAAAAAAhwFAAAAAdAAAAAAAAAA==",
+              "ViewState": "AgIAAFwAAAAAAAAAAAAYwHsAAAATAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-09T06:02:44.473Z",
+              "WhenOpened": "2026-05-17T05:41:10.701Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
-              "Title": "AuthController.cs",
-              "DocumentMoniker": "D:\\Y3-HK2\\LTDD\\BackEnd\\API\\API\\Controller\\AuthController.cs",
-              "RelativeDocumentMoniker": "API\\Controller\\AuthController.cs",
-              "ToolTip": "D:\\Y3-HK2\\LTDD\\BackEnd\\API\\API\\Controller\\AuthController.cs",
-              "RelativeToolTip": "API\\Controller\\AuthController.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAA==",
+              "DocumentIndex": 3,
+              "Title": "PostController.cs",
+              "DocumentMoniker": "D:\\Y3-HK2\\LTDD\\BackEnd\\API\\API\\Controller\\PostController.cs",
+              "RelativeDocumentMoniker": "API\\Controller\\PostController.cs",
+              "ToolTip": "D:\\Y3-HK2\\LTDD\\BackEnd\\API\\API\\Controller\\PostController.cs",
+              "RelativeToolTip": "API\\Controller\\PostController.cs",
+              "ViewState": "AgIAACsAAAAAAAAAAAAcwAEBAAAJAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-09T06:02:18.313Z"
+              "WhenOpened": "2026-05-17T05:09:36.159Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "UserController.cs",
+              "DocumentMoniker": "D:\\Y3-HK2\\LTDD\\BackEnd\\API\\API\\Controller\\UserController.cs",
+              "RelativeDocumentMoniker": "API\\Controller\\UserController.cs",
+              "ToolTip": "D:\\Y3-HK2\\LTDD\\BackEnd\\API\\API\\Controller\\UserController.cs",
+              "RelativeToolTip": "API\\Controller\\UserController.cs",
+              "ViewState": "AgIAADgAAAAAAAAAAAA3wKYAAABDAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-17T05:08:06.674Z",
+              "EditorCaption": ""
             }
           ]
         },
         {
-          "DockedWidth": 787,
+          "DockedWidth": 448,
           "SelectedChildIndex": -1,
           "Children": [
             {

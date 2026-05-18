@@ -17,6 +17,10 @@ namespace API.DTOs
         public bool DisableComments { get; set; }
         public bool IsArchived { get; set; }
     }
+    public class PostUpdateCaptionDTO
+    {
+        public string? Caption { get; set; }
+    }
     public class CommentRequestDTO
     {
         public string Content { get; set; } = null!;

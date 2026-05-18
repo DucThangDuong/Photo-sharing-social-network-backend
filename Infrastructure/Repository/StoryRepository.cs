@@ -1,7 +1,8 @@
-using API.Entities;
+﻿using API.Entities;
 using Application.DTOs;
 using Application.Interfaces;
 using Infrastructure.Context;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Threading.Tasks;
 
@@ -23,13 +24,12 @@ namespace Infrastructure.Repository
                 UserId = userId,
                 MediaUrl = mediaUrl,
                 CreatedAt = DateTime.UtcNow,
-                ExpiresAt = DateTime.UtcNow.AddHours(24), // Story expires after 24 hours
+                ExpiresAt = DateTime.UtcNow.AddHours(24), 
                 IsDeleted = false,
                 IsArchived = false
             };
 
             await _context.Stories.AddAsync(story);
-            // SaveChanges is called by UnitOfWork
             
             return new StoryDTO
             {
@@ -41,67 +41,77 @@ namespace Infrastructure.Repository
             };
         }
 
-        public async Task<System.Collections.Generic.List<UserStoryDTO>> GetActiveStoriesAsync(int currentUserId)
+        public async Task CreateStoryView(int storyId, int viewerId)
         {
-            var followingIds = await Microsoft.EntityFrameworkCore.EntityFrameworkQueryableExtensions.ToListAsync(
-                System.Linq.Queryable.Select(
-                    System.Linq.Queryable.Where(_context.Follows, f => f.FollowerId == currentUserId),
-                    f => f.FollowingId
-                )
-            );
+            StoryView storyView = new StoryView
+            {
+                StoryId = storyId,
+                ViewerId = viewerId,
+                ViewedAt = DateTime.UtcNow,
+                IsLiked = false
+            };
+            await _context.StoryViews.AddAsync(storyView);
+        }
 
-            var userIds = new System.Collections.Generic.List<int> { currentUserId };
-            userIds.AddRange(followingIds);
-
+        public async Task<List<UserStoryDTO>> GetActiveStoriesAsync(int useuserIdguestrId, int UserId)
+        {
             var now = DateTime.UtcNow;
 
-            var activeStories = await Microsoft.EntityFrameworkCore.EntityFrameworkQueryableExtensions.ToListAsync(
-                System.Linq.Queryable.Where(
-                    _context.Stories,
-                    s => userIds.Contains(s.UserId) && !s.IsDeleted && s.ExpiresAt > now
-                )
-            );
+            // 1. Chỉ lấy các Story còn hạn của ĐÚNG người dùng mục tiêu (userId)
+            var activeStories = await _context.Stories
+                .Where(s => s.UserId == useuserIdguestrId && !s.IsDeleted && s.ExpiresAt > now)
+                .OrderBy(s => s.CreatedAt) // Sắp xếp cũ nhất lên trước
+                .ToListAsync();
 
-            var groupedStories = System.Linq.Enumerable.GroupBy(activeStories, s => s.UserId);
-
-            var result = new System.Collections.Generic.List<UserStoryDTO>();
-
-            foreach (var group in groupedStories)
+            // Nếu người này không có Story nào, trả về mảng rỗng luôn
+            if (!activeStories.Any())
             {
-                var user = await Microsoft.EntityFrameworkCore.EntityFrameworkQueryableExtensions.FirstOrDefaultAsync(
-                    _context.Users, u => u.Id == group.Key
-                );
-
-                if (user != null)
-                {
-                    result.Add(new UserStoryDTO
-                    {
-                        UserId = user.Id,
-                        Username = user.Username,
-                        AvatarUrl = user.AvatarUrl,
-                        Stories = System.Linq.Enumerable.ToList(
-                            System.Linq.Enumerable.Select(
-                                System.Linq.Enumerable.OrderBy(group, s => s.CreatedAt),
-                                s => new StoryDTO
-                                {
-                                    Id = s.Id,
-                                    UserId = s.UserId,
-                                    MediaUrl = s.MediaUrl,
-                                    CreatedAt = s.CreatedAt,
-                                    ExpiresAt = s.ExpiresAt
-                                }
-                            )
-                        )
-                    });
-                }
+                return new List<UserStoryDTO>();
             }
 
-            // Put current user first
-            result = System.Linq.Enumerable.ToList(
-                System.Linq.Enumerable.OrderByDescending(result, r => r.UserId == currentUserId)
-            );
+            // 2. Lấy danh sách ID các Story mà người xem (currentUserId) ĐÃ XEM
+            var activeStoryIds = activeStories.Select(s => s.Id).ToList();
 
-            return result;
+            var viewedStoryIds = await _context.StoryViews
+                .Where(sv => sv.ViewerId == UserId && activeStoryIds.Contains(sv.StoryId))
+                .Select(sv => sv.StoryId)
+                .ToListAsync();
+
+            var viewedSet = new HashSet<int>(viewedStoryIds);
+
+            // 3. Lấy thông tin cơ bản của người dùng mục tiêu
+            var user = await _context.Users
+                .Where(u => u.Id == useuserIdguestrId)
+                .Select(u => new { u.Id, u.Username, u.AvatarUrl }) // Chỉ lấy những cột cần thiết cho nhẹ
+                .FirstOrDefaultAsync();
+
+            if (user == null)
+            {
+                return new List<UserStoryDTO>();
+            }
+
+            // 4. Map dữ liệu sang DTO
+            var storiesList = activeStories.Select(s => new StoryDTO
+            {
+                Id = s.Id,
+                UserId = s.UserId,
+                MediaUrl = s.MediaUrl,
+                CreatedAt = s.CreatedAt,
+                ExpiresAt = s.ExpiresAt,
+                IsSeen = viewedSet.Contains(s.Id)
+            }).ToList();
+
+            var userStory = new UserStoryDTO
+            {
+                UserId = user.Id,
+                Username = user.Username,
+                AvatarUrl = user.AvatarUrl,
+                HasSeen = storiesList.All(s => s.IsSeen),
+                Stories = storiesList
+            };
+
+            // Dù chỉ có 1 User, nhưng vì kiểu trả về của bạn là List<UserStoryDTO> nên ta bọc nó trong List
+            return new List<UserStoryDTO> { userStory };
         }
     }
 }

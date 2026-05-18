@@ -76,7 +76,7 @@ namespace API.Controller
             try
             {
                 int userId = HttpContext.User.GetUserId();
-                var activeStories = await _unitOfWork.StoryRepository.GetActiveStoriesAsync(userId);
+                var activeStories = await _unitOfWork.StoryRepository.GetActiveStoriesAsync(userId,userId);
 
                 return Ok(new
                 {
@@ -86,6 +86,56 @@ namespace API.Controller
                 });
             }
             catch (System.Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new
+                {
+                    success = false,
+                    message = "An error occurred while retrieving stories",
+                    error = ex.Message
+                });
+            }
+        }
+        [HttpGet("guest/{userIdguest}/active")]
+        [Authorize]
+        public async Task<IActionResult> GetGuestActiveStories(int userIdguest)
+        {
+            try
+            {
+                int userId = HttpContext.User.GetUserId();
+                var activeStories = await _unitOfWork.StoryRepository.GetActiveStoriesAsync(userIdguest, userId);
+                return Ok(new
+                {
+                    success = true,
+                    message = "Active stories retrieved successfully",
+                    data = activeStories
+                });
+            }
+            catch (System.Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new
+                {
+                    success = false,
+                    message = "An error occurred while retrieving stories",
+                    error = ex.Message
+                });
+            }
+        }
+        [HttpPost("view/{storyId}")]
+        [Authorize]
+        public async Task<IActionResult> CreateStoryView(int storyId)
+        {
+            try
+            {
+                int userId = HttpContext.User.GetUserId();
+                await _unitOfWork.StoryRepository.CreateStoryView(storyId, userId);
+                await _unitOfWork.SaveChanges();
+                return Ok(new
+                {
+                    success = true,
+                    message = "Active stories retrieved successfully",
+                });
+            }
+            catch (Exception ex)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, new
                 {
