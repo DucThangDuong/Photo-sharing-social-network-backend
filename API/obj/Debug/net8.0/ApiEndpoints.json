@@ -118,6 +118,26 @@
   },
   {
     "ContainingType": "API.Controller.PostController",
+    "Method": "GetArchivedPosts",
+    "RelativePath": "post/archived",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "API.Controller.PostController",
+    "Method": "GetLikedPosts",
+    "RelativePath": "post/liked",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "API.Controller.PostController",
     "Method": "CreatePost",
     "RelativePath": "post/newPost",
     "HttpMethod": "POST",
@@ -193,6 +213,22 @@
     "ContainingType": "API.Controller.PostController",
     "Method": "GetPostByIdWithUser",
     "RelativePath": "post/user/{postId}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "postId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "API.Controller.PostController",
+    "Method": "GetPostByIdArchive",
+    "RelativePath": "post/user/{postId}/archived",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,

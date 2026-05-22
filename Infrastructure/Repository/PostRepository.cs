@@ -25,7 +25,7 @@ namespace Infrastructure.Repository
         public async Task<List<PostSummaryDTO>> GetPostsSummaryByUserIdAsync(int userId)
         {
             return await _context.Posts
-                .Where(p => p.UserId == userId && p.IsDeleted != true)
+                .Where(p => p.UserId == userId && p.IsDeleted != true && p.IsArchived!=true)
                 .OrderByDescending(p => p.CreatedAt)
                 .Select(p => new PostSummaryDTO
                 {
@@ -288,6 +288,66 @@ namespace Infrastructure.Repository
                     }).ToList()
                 })
                 .FirstOrDefaultAsync();
+        }
+        public async Task<FeedPostDTO?> GetPostsByPostIdArchivedAsync(int PostId, int userId)
+        {
+            return await _context.Posts
+                .Where(p => !p.IsDeleted && p.Id == PostId)
+                .Select(p => new FeedPostDTO
+                {
+                    Id = p.Id,
+                    UserId = p.UserId,
+                    Username = p.User.Username,
+                    AvatarUrl = p.User.AvatarUrl,
+                    Caption = p.Caption,
+                    CreatedAt = p.CreatedAt,
+                    Visibility = p.Visibility,
+                    HideLikeCount = p.HideLikeCount,
+                    DisableComments = p.DisableComments,
+                    IsArchived = p.IsArchived,
+                    LikeCount = p.Likes.Count(),
+                    CommentCount = p.Comments.Count(),
+                    IsLikedByCurrentUser = p.Likes.Any(l => l.UserId == userId),
+                    PostMedia = p.PostMedia.Select(pm => new PostSummaryMediumDTO
+                    {
+                        MediaUrl = pm.MediaUrl
+                    }).ToList()
+                })
+                .FirstOrDefaultAsync();
+        }
+
+        public async Task<List<PostSummaryDTO>> GetLikedPostsByUserIdAsync(int userId)
+        {
+            return await _context.Posts
+                .Where(p => !p.IsDeleted && !p.IsArchived && p.Likes.Any(l => l.UserId == userId))
+                .OrderByDescending(p => p.Likes.Where(l => l.UserId == userId).Select(l => l.CreatedAt).FirstOrDefault())
+                .Select(p => new PostSummaryDTO
+                {
+                    Id = p.Id,
+                    Caption = p.Caption,
+                    PostMedia = p.PostMedia.Select(pm => new PostSummaryMediumDTO
+                    {
+                        MediaUrl = pm.MediaUrl
+                    }).ToList()
+                })
+                .ToListAsync();
+        }
+
+        public async Task<List<PostSummaryDTO>> GetArchivedPostsByUserIdAsync(int userId)
+        {
+            return await _context.Posts
+                .Where(p => !p.IsDeleted && p.IsArchived && p.UserId == userId)
+                .OrderByDescending(p => p.CreatedAt)
+                .Select(p => new PostSummaryDTO
+                {
+                    Id = p.Id,
+                    Caption = p.Caption,
+                    PostMedia = p.PostMedia.Select(pm => new PostSummaryMediumDTO
+                    {
+                        MediaUrl = pm.MediaUrl
+                    }).ToList()
+                })
+                .ToListAsync();
         }
     }
 }

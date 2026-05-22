@@ -22,5 +22,8 @@ namespace Application.Interfaces
         Task<List<PostSummaryDTO>> GetTrendingPostsAsync(int limit = 10);
         Task<List<PostSummaryDTO>> SearchPostsByCaptionAsync(string keyword);
         Task<Post> UpdateCaptionPost(int postId, string newCaption);
+        Task<List<PostSummaryDTO>> GetLikedPostsByUserIdAsync(int userId);
+        Task<List<PostSummaryDTO>> GetArchivedPostsByUserIdAsync(int userId);
+        Task<FeedPostDTO?> GetPostsByPostIdArchivedAsync(int PostId, int userId);
     }
 }

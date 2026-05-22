@@ -1,4 +1,4 @@
-﻿using API.DTOs;
+using API.DTOs;
 using API.Extensions;
 using Application.Interfaces;
 using Microsoft.AspNetCore.Authorization;
@@ -36,6 +36,31 @@ namespace API.Controller
                 {
                     success = false,
                     message = "An error occurred while retrieving trending posts",
+                    error = ex.Message
+                });
+            }
+        }
+        [HttpGet("archived")]
+        [Authorize]
+        public async Task<IActionResult> GetArchivedPosts()
+        {
+            try
+            {
+                int userId = HttpContext.User.GetUserId();
+                var posts = await _unitOfWork.PostRepository.GetArchivedPostsByUserIdAsync(userId);
+                return Ok(new
+                {
+                    success = true,
+                    message = "Archived posts retrieved successfully",
+                    data = posts
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new
+                {
+                    success = false,
+                    message = "An error occurred while retrieving archived posts",
                     error = ex.Message
                 });
             }
@@ -127,6 +152,31 @@ namespace API.Controller
             {
                 int userId = HttpContext.User.GetUserId();
                 var posts = await _unitOfWork.PostRepository.GetPostsByPostIdWithUserAsync(postId, userId);
+                return Ok(new
+                {
+                    success = true,
+                    message = "Posts retrieved successfully",
+                    data = posts
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new
+                {
+                    success = false,
+                    message = "An error occurred while retrieving posts",
+                    error = ex.Message
+                });
+            }
+        }
+        [HttpGet("user/{postId}/archived")]
+        [Authorize]
+        public async Task<IActionResult> GetPostByIdArchive(int postId)
+        {
+            try
+            {
+                int userId = HttpContext.User.GetUserId();
+                var posts = await _unitOfWork.PostRepository.GetPostsByPostIdArchivedAsync(postId, userId);
                 return Ok(new
                 {
                     success = true,
@@ -319,5 +369,32 @@ namespace API.Controller
                 });
             }
         }
+
+        [HttpGet("liked")]
+        [Authorize]
+        public async Task<IActionResult> GetLikedPosts()
+        {
+            try
+            {
+                int userId = HttpContext.User.GetUserId();
+                var posts = await _unitOfWork.PostRepository.GetLikedPostsByUserIdAsync(userId);
+                return Ok(new
+                {
+                    success = true,
+                    message = "Liked posts retrieved successfully",
+                    data = posts
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new
+                {
+                    success = false,
+                    message = "An error occurred while retrieving liked posts",
+                    error = ex.Message
+                });
+            }
+        }
+
     }
 }
