@@ -11,6 +11,7 @@ namespace Application.Interfaces
     public interface IUserRepository
     {
         public Task AddAsync(string username,string fullName, string email, string password);
+        public Task<bool> IsFollowUser(int followerId, int followingId);
         public Task AddAsync(User newUser);
         public Task<User?> GetByEmailAsync(string email);
         public Task<bool> EmailExistsAsync(string email);

@@ -14,6 +14,7 @@ namespace Application.Interfaces
         Task<Post?> GetEntityByIdAsync(int postId);
         Task UpdateAsync(Post post);
         Task<PostDetailDTO?> GetPostsByPostIdAsync(int PostId, int userId);
+        Task<FeedPostDTO?> GetPostsByPostIdWithUserAsync(int PostId, int userId);
         Task<List<CommentDTO>> GetCommentsByPostIdAsync(int postId);
         Task<bool> ToggleLikeAsync(int postId, int userId);
         Task<CommentDTO> AddCommentAsync(int postId, int userId, string content);

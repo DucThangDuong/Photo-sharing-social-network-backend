@@ -23,7 +23,7 @@ namespace Infrastructure.Repository
             string passwordHash = BCrypt.Net.BCrypt.HashPassword(password);
             User user = new User
             {
-                AvatarUrl = null,
+                AvatarUrl = "/images/default-avatar.jpg",
                 Bio = null,
                 CreatedAt = DateTime.UtcNow,
                 Email = email,
@@ -156,6 +156,11 @@ namespace Infrastructure.Repository
                     isFollowing = f.Following.FollowFollowings.Any(ff => ff.FollowerId == userId)
                 })
                 .ToListAsync();
+        }
+
+        public async Task<bool> IsFollowUser(int followerId, int followingId)
+        {
+            return await _context.Follows.AnyAsync(f => f.FollowerId == followerId && f.FollowingId == followingId);
         }
     }
 }

@@ -262,5 +262,32 @@ namespace Infrastructure.Repository
                 })
                 .ToListAsync();
         }
+
+        public async Task<FeedPostDTO?> GetPostsByPostIdWithUserAsync(int PostId, int userId)
+        {
+            return await _context.Posts
+                .Where(p => !p.IsDeleted && !p.IsArchived && p.Id == PostId)
+                .Select(p => new FeedPostDTO
+                {
+                    Id = p.Id,
+                    UserId = p.UserId,
+                    Username = p.User.Username,
+                    AvatarUrl = p.User.AvatarUrl,
+                    Caption = p.Caption,
+                    CreatedAt = p.CreatedAt,
+                    Visibility = p.Visibility,
+                    HideLikeCount = p.HideLikeCount,
+                    DisableComments = p.DisableComments,
+                    IsArchived = p.IsArchived,
+                    LikeCount = p.Likes.Count(),
+                    CommentCount = p.Comments.Count(),
+                    IsLikedByCurrentUser = p.Likes.Any(l => l.UserId == userId),
+                    PostMedia = p.PostMedia.Select(pm => new PostSummaryMediumDTO
+                    {
+                        MediaUrl = pm.MediaUrl
+                    }).ToList()
+                })
+                .FirstOrDefaultAsync();
+        }
     }
 }

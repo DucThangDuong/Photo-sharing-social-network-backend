@@ -85,6 +85,35 @@ namespace API.Controller
                 });
             }
         }
+        [HttpGet("isFollow")]
+        [Authorize]
+        public async Task<IActionResult> UnfollowUser([FromQuery] int followingId)
+        {
+            try
+            {
+                int followerId = HttpContext.User.GetUserId();
+                if (followerId == followingId)
+                {
+                    return BadRequest(new { success = false, message = "You cannot unfollow yourself" });
+                }
+                bool isUnfollowed = await _unitOfWork.UserRepository.IsFollowUser(followerId, followingId);
+                return Ok(new
+                {
+                    success = true,
+                    message = isUnfollowed ? "Unfollowed successfully" : "Followed successfully",
+                    data = isUnfollowed
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new
+                {
+                    success = false,
+                    message = "An error occurred while processing the unfollow request",
+                    error = ex.Message
+                });
+            }
+        }
         [HttpGet("postsSummary")]
         [Authorize]
         public async Task<IActionResult> GetMyPostsSummary()
@@ -203,7 +232,7 @@ namespace API.Controller
 
                 if (!string.IsNullOrEmpty(dto.Username)) user.Username = dto.Username;
                 if (!string.IsNullOrEmpty(dto.FullName)) user.FullName = dto.FullName;
-                if (!string.IsNullOrEmpty(dto.Bio)) user.Bio = dto.Bio;
+                user.Bio = dto.Bio;
                 if (dto.Gender.HasValue) user.Gender = dto.Gender.Value;
 
                 if (dto.Avatar != null && dto.Avatar.Length > 0)

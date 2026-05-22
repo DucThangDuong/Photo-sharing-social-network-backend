@@ -1,9 +1,10 @@
 using API.DTOs;
-using Application.Interfaces;
 using API.Entities;
+using Application.Interfaces;
 using Infrastructure.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace API.Controller
 {
@@ -34,7 +35,7 @@ namespace API.Controller
                     });
                 }
                 User? user = await _unitOfWork.UserRepository.GetByEmailAsync(userLogin.Email!);
-                if (user == null)
+                if (user == null || !BCrypt.Net.BCrypt.Verify(userLogin.Password, user.PasswordHash))
                 {
                     return NotFound(new
                     {

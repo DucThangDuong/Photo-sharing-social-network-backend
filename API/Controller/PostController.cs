@@ -50,7 +50,6 @@ namespace API.Controller
                 {
                     return BadRequest(new { success = false, message = "Keyword is required" });
                 }
-
                 var posts = await _unitOfWork.PostRepository.SearchPostsByCaptionAsync(keyword);
 
                 return Ok(new
@@ -103,6 +102,31 @@ namespace API.Controller
             {
                 int userId = HttpContext.User.GetUserId();
                 var posts = await _unitOfWork.PostRepository.GetPostsByPostIdAsync(postId, userId);
+                return Ok(new
+                {
+                    success = true,
+                    message = "Posts retrieved successfully",
+                    data = posts
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new
+                {
+                    success = false,
+                    message = "An error occurred while retrieving posts",
+                    error = ex.Message
+                });
+            }
+        }
+        [HttpGet("user/{postId}")]
+        [Authorize]
+        public async Task<IActionResult> GetPostByIdWithUser(int postId)
+        {
+            try
+            {
+                int userId = HttpContext.User.GetUserId();
+                var posts = await _unitOfWork.PostRepository.GetPostsByPostIdWithUserAsync(postId, userId);
                 return Ok(new
                 {
                     success = true,
@@ -237,6 +261,15 @@ namespace API.Controller
                 }
 
                 int userId = HttpContext.User.GetUserId();
+                var post = await _unitOfWork.PostRepository.GetEntityByIdAsync(postId);
+                if (post.DisableComments==true)
+                {
+                    return StatusCode(StatusCodes.Status500InternalServerError, new
+                    {
+                        success = false,
+                        message = "An error occurred while adding comment",
+                    });
+                }
                 var comment = await _unitOfWork.PostRepository.AddCommentAsync(postId, userId, dto.Content);
 
                 return Ok(new
