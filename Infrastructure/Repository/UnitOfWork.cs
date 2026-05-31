@@ -1,4 +1,4 @@
-using API.Entities;
+using API.Models;
 using Application.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -14,6 +14,7 @@ namespace Infrastructure.Repository
         public IUserRepository UserRepository { get; }
         public IPostRepository PostRepository { get; }
         public IStoryRepository StoryRepository { get; }
+        public INotificationRepository NotificationRepository { get; }
 
         public UnitOfWork(InstagramContext context, IUserRepository userRepository)
         {
@@ -21,6 +22,7 @@ namespace Infrastructure.Repository
             UserRepository = userRepository;
             PostRepository = new PostRepository(_context);
             StoryRepository = new StoryRepository(_context);
+            NotificationRepository = new NotificationRepository(_context);
         }
 
         public async Task SaveChanges()

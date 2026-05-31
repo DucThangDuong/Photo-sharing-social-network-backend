@@ -11,6 +11,7 @@ namespace Application.Interfaces
         IUserRepository UserRepository { get; }
         IPostRepository PostRepository { get; }
         IStoryRepository StoryRepository { get; }
+        INotificationRepository NotificationRepository { get; }
         Task SaveChanges();
     }
 }

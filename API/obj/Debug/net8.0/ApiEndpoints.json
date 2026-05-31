@@ -48,9 +48,104 @@
     "ReturnTypes": []
   },
   {
+    "ContainingType": "API.Controller.AuthController",
+    "Method": "SaveDeviceToken",
+    "RelativePath": "auth/save-device-token",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "API.DTOs.SaveTokenRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "API.Controller.NotificationController",
+    "Method": "GetNotifications",
+    "RelativePath": "notification",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "API.Controller.NotificationController",
+    "Method": "MarkAsRead",
+    "RelativePath": "notification/{id}/read",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
     "ContainingType": "API.Controller.PostController",
     "Method": "GetPostById",
     "RelativePath": "post/{postId}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "postId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "API.Controller.PostController",
+    "Method": "UpdatePost",
+    "RelativePath": "post/{postId}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "postId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "dto",
+        "Type": "API.DTOs.PostUpdateDTO",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "API.Controller.PostController",
+    "Method": "DeletePost",
+    "RelativePath": "post/{postId}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "postId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "API.Controller.PostController",
+    "Method": "GetPostByIdArchive",
+    "RelativePath": "post/{postId}/archived/me",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
@@ -118,6 +213,38 @@
   },
   {
     "ContainingType": "API.Controller.PostController",
+    "Method": "GetPostLikers",
+    "RelativePath": "post/{postId}/likers",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "postId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "API.Controller.PostController",
+    "Method": "GetPostByIdOfUser",
+    "RelativePath": "post/{postId}/me",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "postId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "API.Controller.PostController",
     "Method": "GetArchivedPosts",
     "RelativePath": "post/archived",
     "HttpMethod": "GET",
@@ -165,7 +292,7 @@
   {
     "ContainingType": "API.Controller.PostController",
     "Method": "SearchPosts",
-    "RelativePath": "post/search/posts",
+    "RelativePath": "post/search",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
@@ -191,7 +318,7 @@
   {
     "ContainingType": "API.Controller.PostController",
     "Method": "UpdatePost",
-    "RelativePath": "post/update/{postId}",
+    "RelativePath": "post/update/{postId}/caption",
     "HttpMethod": "PUT",
     "IsController": true,
     "Order": 0,
@@ -204,38 +331,6 @@
       {
         "Name": "dto",
         "Type": "API.DTOs.PostUpdateCaptionDTO",
-        "IsRequired": true
-      }
-    ],
-    "ReturnTypes": []
-  },
-  {
-    "ContainingType": "API.Controller.PostController",
-    "Method": "GetPostByIdWithUser",
-    "RelativePath": "post/user/{postId}",
-    "HttpMethod": "GET",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "postId",
-        "Type": "System.Int32",
-        "IsRequired": true
-      }
-    ],
-    "ReturnTypes": []
-  },
-  {
-    "ContainingType": "API.Controller.PostController",
-    "Method": "GetPostByIdArchive",
-    "RelativePath": "post/user/{postId}/archived",
-    "HttpMethod": "GET",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "postId",
-        "Type": "System.Int32",
         "IsRequired": true
       }
     ],
@@ -374,14 +469,14 @@
   },
   {
     "ContainingType": "API.Controller.UserController",
-    "Method": "GetProfileOfUser",
-    "RelativePath": "user/{userIdFind}",
+    "Method": "GetPostsSummary",
+    "RelativePath": "user/{userId}/postsSummary",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
     "Parameters": [
       {
-        "Name": "userIdFind",
+        "Name": "userId",
         "Type": "System.Int32",
         "IsRequired": true
       }
@@ -432,43 +527,6 @@
   },
   {
     "ContainingType": "API.Controller.UserController",
-    "Method": "UpdatePost",
-    "RelativePath": "user/post/{postId}",
-    "HttpMethod": "PUT",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "postId",
-        "Type": "System.Int32",
-        "IsRequired": true
-      },
-      {
-        "Name": "dto",
-        "Type": "API.DTOs.PostUpdateDTO",
-        "IsRequired": true
-      }
-    ],
-    "ReturnTypes": []
-  },
-  {
-    "ContainingType": "API.Controller.UserController",
-    "Method": "DeletePost",
-    "RelativePath": "user/post/{postId}",
-    "HttpMethod": "DELETE",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "postId",
-        "Type": "System.Int32",
-        "IsRequired": true
-      }
-    ],
-    "ReturnTypes": []
-  },
-  {
-    "ContainingType": "API.Controller.UserController",
     "Method": "GetMyPosts",
     "RelativePath": "user/posts",
     "HttpMethod": "GET",
@@ -485,22 +543,6 @@
     "IsController": true,
     "Order": 0,
     "Parameters": [],
-    "ReturnTypes": []
-  },
-  {
-    "ContainingType": "API.Controller.UserController",
-    "Method": "GetPostsSummary",
-    "RelativePath": "user/postsSummary/{userId}",
-    "HttpMethod": "GET",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "userId",
-        "Type": "System.Int32",
-        "IsRequired": true
-      }
-    ],
     "ReturnTypes": []
   },
   {
@@ -545,6 +587,22 @@
         "Name": "Gender",
         "Type": "System.Nullable\u00601[[System.Int32, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]",
         "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "API.Controller.UserController",
+    "Method": "GetProfileOfUser",
+    "RelativePath": "user/profile/{userIdFind}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "userIdFind",
+        "Type": "System.Int32",
+        "IsRequired": true
       }
     ],
     "ReturnTypes": []

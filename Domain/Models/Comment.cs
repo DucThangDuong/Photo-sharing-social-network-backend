@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace API.Entities;
+namespace API.Models;
 
 public partial class Comment
 {
@@ -14,6 +14,8 @@ public partial class Comment
     public string Content { get; set; } = null!;
 
     public DateTime CreatedAt { get; set; }
+
+    public virtual ICollection<Notification> Notifications { get; set; } = new List<Notification>();
 
     public virtual Post Post { get; set; } = null!;
 

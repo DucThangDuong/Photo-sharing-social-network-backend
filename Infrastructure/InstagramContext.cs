@@ -1,7 +1,6 @@
-﻿using API.Entities;
+using API.Models;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
+
 namespace Infrastructure.Context;
 
 public partial class InstagramContext : DbContext
@@ -21,6 +20,8 @@ public partial class InstagramContext : DbContext
 
     public virtual DbSet<Like> Likes { get; set; }
 
+    public virtual DbSet<Notification> Notifications { get; set; }
+
     public virtual DbSet<Post> Posts { get; set; }
 
     public virtual DbSet<PostMedium> PostMedia { get; set; }
@@ -31,7 +32,7 @@ public partial class InstagramContext : DbContext
 
     public virtual DbSet<User> Users { get; set; }
 
-
+    public virtual DbSet<UserDevice> UserDevices { get; set; }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Comment>(entity =>
@@ -88,6 +89,36 @@ public partial class InstagramContext : DbContext
                 .HasForeignKey(d => d.UserId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK__Likes__UserId__628FA481");
+        });
+
+        modelBuilder.Entity<Notification>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__Notifica__3214EC07DBF8F244");
+
+            entity.Property(e => e.CreatedAt).HasDefaultValueSql("(getutcdate())");
+            entity.Property(e => e.PreviewText).HasMaxLength(255);
+
+            entity.HasOne(d => d.Comment).WithMany(p => p.Notifications)
+                .HasForeignKey(d => d.CommentId)
+                .HasConstraintName("FK_Notif_Comment");
+
+            entity.HasOne(d => d.Post).WithMany(p => p.Notifications)
+                .HasForeignKey(d => d.PostId)
+                .HasConstraintName("FK_Notif_Post");
+
+            entity.HasOne(d => d.Receiver).WithMany(p => p.NotificationReceivers)
+                .HasForeignKey(d => d.ReceiverId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_Notif_Receiver");
+
+            entity.HasOne(d => d.Sender).WithMany(p => p.NotificationSenders)
+                .HasForeignKey(d => d.SenderId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_Notif_Sender");
+
+            entity.HasOne(d => d.Story).WithMany(p => p.Notifications)
+                .HasForeignKey(d => d.StoryId)
+                .HasConstraintName("FK_Notif_Story");
         });
 
         modelBuilder.Entity<Post>(entity =>
@@ -176,6 +207,30 @@ public partial class InstagramContext : DbContext
             entity.Property(e => e.Username)
                 .HasMaxLength(50)
                 .IsUnicode(false);
+        });
+
+        modelBuilder.Entity<UserDevice>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK_UserDevices");
+
+            entity.HasIndex(e => e.DeviceToken, "UQ_UserDevices_DeviceToken").IsUnique();
+
+            entity.Property(e => e.DeviceToken)
+                .HasMaxLength(500)
+                .IsUnicode(false);
+
+            entity.Property(e => e.DeviceType)
+                .HasMaxLength(20)
+                .IsUnicode(false);
+
+            entity.Property(e => e.UpdatedAt)
+                .HasDefaultValueSql("(getutcdate())")
+                .HasColumnType("datetime2");
+
+            entity.HasOne(d => d.User).WithMany(p => p.UserDevices)
+                .HasForeignKey(d => d.UserId)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("FK_UserDevices_Users_UserId");
         });
 
         OnModelCreatingPartial(modelBuilder);

@@ -137,7 +137,6 @@ D:\Y3-HK2\LTDD\BackEnd\API\API\obj\Debug\net8.0\staticwebassets.build.json.cache
 D:\Y3-HK2\LTDD\BackEnd\API\API\obj\Debug\net8.0\staticwebassets.development.json
 D:\Y3-HK2\LTDD\BackEnd\API\API\obj\Debug\net8.0\staticwebassets.build.endpoints.json
 D:\Y3-HK2\LTDD\BackEnd\API\API\obj\Debug\net8.0\swae.build.ex.cache
-D:\Y3-HK2\LTDD\BackEnd\API\API\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt
 D:\Y3-HK2\LTDD\BackEnd\API\API\obj\Debug\net8.0\API.csproj.Up2Date
 D:\Y3-HK2\LTDD\BackEnd\API\API\obj\Debug\net8.0\API.dll
 D:\Y3-HK2\LTDD\BackEnd\API\API\obj\Debug\net8.0\refint\API.dll
@@ -161,3 +160,8 @@ D:\Y3-HK2\LTDD\BackEnd\API\API\bin\Debug\net8.0\System.Management.dll
 D:\Y3-HK2\LTDD\BackEnd\API\API\bin\Debug\net8.0\runtimes\win\lib\net7.0\System.Management.dll
 D:\Y3-HK2\LTDD\BackEnd\API\API\obj\Debug\net8.0\API.sourcelink.json
 D:\Y3-HK2\LTDD\BackEnd\API\API\bin\Debug\net8.0\BCrypt.Net-Next.dll
+D:\Y3-HK2\LTDD\BackEnd\API\API\bin\Debug\net8.0\ltdd-push-notification-firebase-adminsdk-fbsvc-7376edb21d.json
+D:\Y3-HK2\LTDD\BackEnd\API\API\bin\Debug\net8.0\FirebaseAdmin.dll
+D:\Y3-HK2\LTDD\BackEnd\API\API\bin\Debug\net8.0\Google.Api.Gax.dll
+D:\Y3-HK2\LTDD\BackEnd\API\API\bin\Debug\net8.0\Google.Api.Gax.Rest.dll
+D:\Y3-HK2\LTDD\BackEnd\API\API\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt

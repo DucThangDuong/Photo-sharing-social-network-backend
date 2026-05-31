@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace API.Entities;
+namespace API.Models;
 
 public partial class Post
 {
@@ -26,6 +26,8 @@ public partial class Post
     public virtual ICollection<Comment> Comments { get; set; } = new List<Comment>();
 
     public virtual ICollection<Like> Likes { get; set; } = new List<Like>();
+
+    public virtual ICollection<Notification> Notifications { get; set; } = new List<Notification>();
 
     public virtual ICollection<PostMedium> PostMedia { get; set; } = new List<PostMedium>();
 

@@ -15,9 +15,11 @@ namespace API.Controller
     public class UserController : ControllerBase
     {
         private readonly IUnitOfWork _unitOfWork;
-        public UserController(IUnitOfWork unitOfWork)
+        private readonly IServiceProvider _serviceProvider;
+        public UserController(IUnitOfWork unitOfWork, IServiceProvider serviceProvider)
         {
             _unitOfWork = unitOfWork;
+            _serviceProvider = serviceProvider;
         }
         [HttpGet("profile")]
         [Authorize]
@@ -52,7 +54,7 @@ namespace API.Controller
                 });
             }
         }
-        [HttpGet("{userIdFind}")]
+        [HttpGet("profile/{userIdFind}")]
         [Authorize]
         public async Task<IActionResult> GetProfileOfUser(int userIdFind)
         {
@@ -140,7 +142,7 @@ namespace API.Controller
                 });
             }
         }
-        [HttpGet("postsSummary/{userId}")]
+        [HttpGet("{userId}/postsSummary")]
         [Authorize]
         public async Task<IActionResult> GetPostsSummary(int userId)
         {
@@ -216,7 +218,137 @@ namespace API.Controller
                 });
             }
         }
+        [HttpGet("feed")]
+        [Authorize]
+        public async Task<IActionResult> GetFeed()
+        {
+            try
+            {
+                int userId = HttpContext.User.GetUserId();
+                var posts = await _unitOfWork.PostRepository.GetFeedPostsAsync(userId);
 
+                return Ok(new
+                {
+                    success = true,
+                    message = "Feed retrieved successfully",
+                    data = posts
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new
+                {
+                    success = false,
+                    message = "An error occurred while retrieving feed",
+                    error = ex.Message
+                });
+            }
+        }
+        [HttpGet("suggestions")]
+        [Authorize]
+        public async Task<IActionResult> GetSuggestedUsers()
+        {
+            try
+            {
+                int userId = HttpContext.User.GetUserId();
+                var suggestedUsers = await _unitOfWork.UserRepository.GetSuggestedUsersAsync(userId, 10);
+
+                return Ok(new
+                {
+                    success = true,
+                    message = "Suggested users retrieved successfully",
+                    data = suggestedUsers
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new
+                {
+                    success = false,
+                    message = "An error occurred while retrieving suggested users",
+                    error = ex.Message
+                });
+            }
+        }
+        [HttpGet("search/users")]
+        [Authorize]
+        public async Task<IActionResult> SearchUsers([FromQuery] string keyword)
+        {
+            try
+            {
+                if (string.IsNullOrWhiteSpace(keyword))
+                {
+                    return BadRequest(new { success = false, message = "Keyword is required" });
+                }
+
+                var users = await _unitOfWork.UserRepository.SearchUsersAsync(keyword);
+
+                return Ok(new
+                {
+                    success = true,
+                    message = "Users search completed",
+                    data = users
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new
+                {
+                    success = false,
+                    message = "An error occurred while searching users",
+                    error = ex.Message
+                });
+            }
+        }
+        [HttpGet("{userId}/followers")]
+        [Authorize]
+        public async Task<IActionResult> GetFollowers(int userId)
+        {
+            try
+            {
+                var followers = await _unitOfWork.UserRepository.GetFollowersAsync(userId);
+                return Ok(new
+                {
+                    success = true,
+                    message = "Followers retrieved successfully",
+                    data = followers
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new
+                {
+                    success = false,
+                    message = "An error occurred while retrieving followers",
+                    error = ex.Message
+                });
+            }
+        }
+
+        [HttpGet("{userId}/following")]
+        [Authorize]
+        public async Task<IActionResult> GetFollowing(int userId)
+        {
+            try
+            {
+                var following = await _unitOfWork.UserRepository.GetFollowingAsync(userId);
+                return Ok(new
+                {
+                    success = true,
+                    message = "Following list retrieved successfully",
+                    data = following
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new
+                {
+                    success = false,
+                    message = "An error occurred while retrieving following list",
+                    error = ex.Message
+                });
+            }
+        }
         [HttpPut("profile")]
         [Authorize]
         public async Task<IActionResult> UpdateProfile([FromForm] UpdateProfileDTO dto)
@@ -283,211 +415,6 @@ namespace API.Controller
             }
         }
 
-        [HttpPut("post/{postId}")]
-        [Authorize]
-        public async Task<IActionResult> UpdatePost(int postId, [FromBody] PostUpdateDTO dto)
-        {
-            try
-            {
-                int userId = HttpContext.User.GetUserId();
-                var post = await _unitOfWork.PostRepository.GetEntityByIdAsync(postId);
-                
-                if (post == null)
-                {
-                    return NotFound(new { success = false, message = "Post not found" });
-                }
-
-                if (post.UserId != userId)
-                {
-                    return Forbid();
-                }
-
-                bool isUpdated = false;
-
-                if (dto.Caption != null && post.Caption != dto.Caption)
-                {
-                    post.Caption = dto.Caption;
-                    isUpdated = true;
-                }
-
-                if (post.Visibility != dto.Visibility)
-                {
-                    post.Visibility = dto.Visibility;
-                    isUpdated = true;
-                }
-
-                if (post.HideLikeCount != dto.HideLikeCount)
-                {
-                    post.HideLikeCount = dto.HideLikeCount;
-                    isUpdated = true;
-                }
-
-                if (post.DisableComments != dto.DisableComments)
-                {
-                    post.DisableComments = dto.DisableComments;
-                    isUpdated = true;
-                }
-
-                if (post.IsArchived != dto.IsArchived)
-                {
-                    post.IsArchived = dto.IsArchived;
-                    isUpdated = true;
-                }
-
-                if (isUpdated)
-                {
-                    await _unitOfWork.PostRepository.UpdateAsync(post);
-                    await _unitOfWork.SaveChanges();
-                }
-                var newPostData = await _unitOfWork.PostRepository.GetPostsByPostIdAsync(post.Id,userId);
-                return Ok(new
-                {
-                    success = true,
-                    message = isUpdated ? "Post updated successfully" : "No changes were made",
-                    data= newPostData
-                });
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, new
-                {
-                    success = false,
-                    message = "An error occurred while updating the post",
-                    error = ex.Message
-                });
-            }
-        }
-
-        [HttpDelete("post/{postId}")]
-        [Authorize]
-        public async Task<IActionResult> DeletePost(int postId)
-        {
-            try
-            {
-                int userId = HttpContext.User.GetUserId();
-                var post = await _unitOfWork.PostRepository.GetEntityByIdAsync(postId);
-                
-                if (post == null)
-                {
-                    return NotFound(new { success = false, message = "Post not found" });
-                }
-
-                if (post.UserId != userId)
-                {
-                    return Forbid();
-                }
-
-                if (post.IsDeleted)
-                {
-                    return BadRequest(new { success = false, message = "Post is already deleted" });
-                }
-
-                post.IsDeleted = true;
-                await _unitOfWork.PostRepository.UpdateAsync(post);
-                await _unitOfWork.SaveChanges();
-
-                return Ok(new
-                {
-                    success = true,
-                    message = "Post deleted successfully"
-                });
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, new
-                {
-                    success = false,
-                    message = "An error occurred while deleting the post",
-                    error = ex.Message
-                });
-            }
-        }
-
-        [HttpGet("feed")]
-        [Authorize]
-        public async Task<IActionResult> GetFeed()
-        {
-            try
-            {
-                int userId = HttpContext.User.GetUserId();
-                var posts = await _unitOfWork.PostRepository.GetFeedPostsAsync(userId);
-
-                return Ok(new
-                {
-                    success = true,
-                    message = "Feed retrieved successfully",
-                    data = posts
-                });
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, new
-                {
-                    success = false,
-                    message = "An error occurred while retrieving feed",
-                    error = ex.Message
-                });
-            }
-        }
-
-        [HttpGet("suggestions")]
-        [Authorize]
-        public async Task<IActionResult> GetSuggestedUsers()
-        {
-            try
-            {
-                int userId = HttpContext.User.GetUserId();
-                var suggestedUsers = await _unitOfWork.UserRepository.GetSuggestedUsersAsync(userId, 10);
-
-                return Ok(new
-                {
-                    success = true,
-                    message = "Suggested users retrieved successfully",
-                    data = suggestedUsers
-                });
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, new
-                {
-                    success = false,
-                    message = "An error occurred while retrieving suggested users",
-                    error = ex.Message
-                });
-            }
-        }
-
-        [HttpGet("search/users")]
-        [Authorize]
-        public async Task<IActionResult> SearchUsers([FromQuery] string keyword)
-        {
-            try
-            {
-                if (string.IsNullOrWhiteSpace(keyword))
-                {
-                    return BadRequest(new { success = false, message = "Keyword is required" });
-                }
-
-                var users = await _unitOfWork.UserRepository.SearchUsersAsync(keyword);
-
-                return Ok(new
-                {
-                    success = true,
-                    message = "Users search completed",
-                    data = users
-                });
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, new
-                {
-                    success = false,
-                    message = "An error occurred while searching users",
-                    error = ex.Message
-                });
-            }
-        }
-
         [HttpPost("follow/{followingId}")]
         [Authorize]
         public async Task<IActionResult> FollowUser(int followingId)
@@ -504,6 +431,56 @@ namespace API.Controller
                 bool isFollowed = await _unitOfWork.UserRepository.FollowUserAsync(followerId, followingId);
                 await _unitOfWork.SaveChanges();
 
+                if (isFollowed)
+                {
+                    await _unitOfWork.NotificationRepository.CreateNotificationAsync(
+                        receiverId: followingId,
+                        senderId: followerId,
+                        type: 2,
+                        previewText: "bắt đầu theo dõi bạn."
+                    );
+                    await _unitOfWork.SaveChanges();
+
+                    var sender = await _unitOfWork.UserRepository.GetByIdAsync(followerId);
+                    string senderName = sender?.Username ?? "Ai đó";
+
+                    _ = Task.Run(async () =>
+                    {
+                        try
+                        {
+                            using (var scope = _serviceProvider.CreateScope())
+                            {
+                                var scopedPushService = scope.ServiceProvider.GetRequiredService<IPushNotificationService>();
+                                var scopedContext = scope.ServiceProvider.GetRequiredService<Infrastructure.Context.InstagramContext>();
+
+                                var deviceTokens = scopedContext.UserDevices
+                                    .Where(d => d.UserId == followingId)
+                                    .Select(d => d.DeviceToken)
+                                    .ToList();
+
+                                if (deviceTokens.Count > 0)
+                                {
+                                    await scopedPushService.SendPushToMultipleAsync(
+                                        deviceTokens,
+                                        "Người theo dõi mới",
+                                        $"{senderName} bắt đầu theo dõi bạn.",
+                                        new Dictionary<string, string>
+                                        {
+                                            { "click_action", "FLUTTER_NOTIFICATION_CLICK" },
+                                            { "type", "2" },
+                                            { "senderId", followerId.ToString() }
+                                        }
+                                    );
+                                }
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine($"[Background Task Error] {ex.Message}");
+                        }
+                    });
+                }
+
                 return Ok(new
                 {
                     success = true,
@@ -517,56 +494,6 @@ namespace API.Controller
                 {
                     success = false,
                     message = "An error occurred while processing the follow request",
-                    error = ex.Message
-                });
-            }
-        }
-
-        [HttpGet("{userId}/followers")]
-        [Authorize]
-        public async Task<IActionResult> GetFollowers(int userId)
-        {
-            try
-            {
-                var followers = await _unitOfWork.UserRepository.GetFollowersAsync(userId);
-                return Ok(new
-                {
-                    success = true,
-                    message = "Followers retrieved successfully",
-                    data = followers
-                });
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, new
-                {
-                    success = false,
-                    message = "An error occurred while retrieving followers",
-                    error = ex.Message
-                });
-            }
-        }
-
-        [HttpGet("{userId}/following")]
-        [Authorize]
-        public async Task<IActionResult> GetFollowing(int userId)
-        {
-            try
-            {
-                var following = await _unitOfWork.UserRepository.GetFollowingAsync(userId);
-                return Ok(new
-                {
-                    success = true,
-                    message = "Following list retrieved successfully",
-                    data = following
-                });
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, new
-                {
-                    success = false,
-                    message = "An error occurred while retrieving following list",
                     error = ex.Message
                 });
             }

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace API.Entities;
+namespace API.Models;
 
 public partial class Story
 {
@@ -18,6 +18,8 @@ public partial class Story
     public bool IsDeleted { get; set; }
 
     public bool IsArchived { get; set; }
+
+    public virtual ICollection<Notification> Notifications { get; set; } = new List<Notification>();
 
     public virtual ICollection<StoryView> StoryViews { get; set; } = new List<StoryView>();
 

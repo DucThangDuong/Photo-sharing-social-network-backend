@@ -1,4 +1,4 @@
-﻿using API.Entities;
+﻿using API.Models;
 using Application.DTOs;
 using Application.Interfaces;
 using Infrastructure.Context;

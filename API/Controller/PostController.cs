@@ -1,5 +1,6 @@
 using API.DTOs;
 using API.Extensions;
+using API.Models;
 using Application.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -11,9 +12,13 @@ namespace API.Controller
     public class PostController : ControllerBase
     {
         public readonly IUnitOfWork _unitOfWork;
-        public PostController(IUnitOfWork unitOfWork)
+        private readonly IPushNotificationService _pushService;
+        private readonly IServiceProvider _serviceProvider;
+        public PostController(IUnitOfWork unitOfWork, IPushNotificationService pushService, IServiceProvider serviceProvider)
         {
             _unitOfWork = unitOfWork;
+            _pushService = pushService;
+            _serviceProvider = serviceProvider;
         }
         [HttpGet("trending")]
         [Authorize]
@@ -65,7 +70,7 @@ namespace API.Controller
                 });
             }
         }
-        [HttpGet("search/posts")]
+        [HttpGet("search")]
         [Authorize]
         public async Task<IActionResult> SearchPosts([FromQuery] string keyword)
         {
@@ -144,9 +149,9 @@ namespace API.Controller
                 });
             }
         }
-        [HttpGet("user/{postId}")]
+        [HttpGet("{postId}/me")]
         [Authorize]
-        public async Task<IActionResult> GetPostByIdWithUser(int postId)
+        public async Task<IActionResult> GetPostByIdOfUser(int postId)
         {
             try
             {
@@ -169,7 +174,7 @@ namespace API.Controller
                 });
             }
         }
-        [HttpGet("user/{postId}/archived")]
+        [HttpGet("{postId}/archived/me")]
         [Authorize]
         public async Task<IActionResult> GetPostByIdArchive(int postId)
         {
@@ -194,6 +199,31 @@ namespace API.Controller
                 });
             }
         }
+        [HttpGet("liked")]
+        [Authorize]
+        public async Task<IActionResult> GetLikedPosts()
+        {
+            try
+            {
+                int userId = HttpContext.User.GetUserId();
+                var posts = await _unitOfWork.PostRepository.GetLikedPostsByUserIdAsync(userId);
+                return Ok(new
+                {
+                    success = true,
+                    message = "Liked posts retrieved successfully",
+                    data = posts
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new
+                {
+                    success = false,
+                    message = "An error occurred while retrieving liked posts",
+                    error = ex.Message
+                });
+            }
+        }
         [HttpPost("newPost")]
         [Authorize]
         public async Task<IActionResult> CreatePost([FromForm] PostDTO postDto)
@@ -202,7 +232,7 @@ namespace API.Controller
             {
                 int userId = HttpContext.User.GetUserId();
 
-                var post = new API.Entities.Post
+                var post = new API.Models.Post
                 {
                     UserId = userId,
                     Caption = postDto.Caption,
@@ -236,7 +266,7 @@ namespace API.Controller
                                 await image.CopyToAsync(stream);
                             }
 
-                            post.PostMedia.Add(new API.Entities.PostMedium
+                            post.PostMedia.Add(new API.Models.PostMedium
                             {
                                 MediaUrl = $"/images/{folderName}/{image.FileName}",
                                 SortOrder = currentSortOrder++,
@@ -248,6 +278,45 @@ namespace API.Controller
 
                 await _unitOfWork.PostRepository.AddAsync(post);
                 await _unitOfWork.SaveChanges();
+
+                await _unitOfWork.NotificationRepository.CreateNotificationsForFollowersAsync(
+                    senderId: userId,
+                    type: 3,
+                    previewText: "đã thêm một bài viết mới.",
+                    postId: post.Id
+                );
+                await _unitOfWork.SaveChanges();
+
+                var sender = await _unitOfWork.UserRepository.GetByIdAsync(userId);
+                string senderName = sender?.Username ?? "Ai đó";
+
+                int currentPostId = post.Id;
+                _ = Task.Run(async () =>
+                {
+                    try
+                    {
+                        using (var scope = _serviceProvider.CreateScope())
+                        {
+                            var scopedPushService = scope.ServiceProvider.GetRequiredService<IPushNotificationService>();
+                            await scopedPushService.SendPushToFollowersAsync(
+                                senderId: userId,
+                                title: "Bài viết mới",
+                                body: $"{senderName} đã thêm một bài viết mới.",
+                                data: new Dictionary<string, string>
+                                {
+                                    { "click_action", "FLUTTER_NOTIFICATION_CLICK" },
+                                    { "type", "3" },
+                                    { "postId", currentPostId.ToString() },
+                                    { "senderId", userId.ToString() }
+                                }
+                            );
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine($"[Background Task Error] {ex.Message}");
+                    }
+                });
 
                 return Ok(new
                 {
@@ -299,6 +368,33 @@ namespace API.Controller
                 });
             }
         }
+
+        [HttpGet("{postId}/likers")]
+        [Authorize]
+        public async Task<IActionResult> GetPostLikers(int postId)
+        {
+            try
+            {
+                int userId = HttpContext.User.GetUserId();
+                var likers = await _unitOfWork.PostRepository.GetPostLikersAsync(postId, userId);
+
+                return Ok(new
+                {
+                    success = true,
+                    message = "Likers retrieved successfully",
+                    data = likers
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new
+                {
+                    success = false,
+                    message = "An error occurred while retrieving likers",
+                    error = ex.Message
+                });
+            }
+        }
         [HttpPost("{postId}/comment")]
         [Authorize]
         public async Task<IActionResult> AddComment(int postId, [FromBody] CommentRequestDTO dto)
@@ -339,7 +435,7 @@ namespace API.Controller
                 });
             }
         }
-        [HttpPut("update/{postId}")]
+        [HttpPut("update/{postId}/caption")]
         [Authorize]
         public async Task<IActionResult> UpdatePost(int postId, [FromBody] PostUpdateCaptionDTO dto)
         {
@@ -369,20 +465,68 @@ namespace API.Controller
                 });
             }
         }
-
-        [HttpGet("liked")]
+        [HttpPut("{postId}")]
         [Authorize]
-        public async Task<IActionResult> GetLikedPosts()
+        public async Task<IActionResult> UpdatePost(int postId, [FromBody] PostUpdateDTO dto)
         {
             try
             {
                 int userId = HttpContext.User.GetUserId();
-                var posts = await _unitOfWork.PostRepository.GetLikedPostsByUserIdAsync(userId);
+                var post = await _unitOfWork.PostRepository.GetEntityByIdAsync(postId);
+
+                if (post == null)
+                {
+                    return NotFound(new { success = false, message = "Post not found" });
+                }
+
+                if (post.UserId != userId)
+                {
+                    return Forbid();
+                }
+
+                bool isUpdated = false;
+
+                if (dto.Caption != null && post.Caption != dto.Caption)
+                {
+                    post.Caption = dto.Caption;
+                    isUpdated = true;
+                }
+
+                if (post.Visibility != dto.Visibility)
+                {
+                    post.Visibility = dto.Visibility;
+                    isUpdated = true;
+                }
+
+                if (post.HideLikeCount != dto.HideLikeCount)
+                {
+                    post.HideLikeCount = dto.HideLikeCount;
+                    isUpdated = true;
+                }
+
+                if (post.DisableComments != dto.DisableComments)
+                {
+                    post.DisableComments = dto.DisableComments;
+                    isUpdated = true;
+                }
+
+                if (post.IsArchived != dto.IsArchived)
+                {
+                    post.IsArchived = dto.IsArchived;
+                    isUpdated = true;
+                }
+
+                if (isUpdated)
+                {
+                    await _unitOfWork.PostRepository.UpdateAsync(post);
+                    await _unitOfWork.SaveChanges();
+                }
+                var newPostData = await _unitOfWork.PostRepository.GetPostsByPostIdAsync(post.Id, userId);
                 return Ok(new
                 {
                     success = true,
-                    message = "Liked posts retrieved successfully",
-                    data = posts
+                    message = isUpdated ? "Post updated successfully" : "No changes were made",
+                    data = newPostData
                 });
             }
             catch (Exception ex)
@@ -390,11 +534,54 @@ namespace API.Controller
                 return StatusCode(StatusCodes.Status500InternalServerError, new
                 {
                     success = false,
-                    message = "An error occurred while retrieving liked posts",
+                    message = "An error occurred while updating the post",
                     error = ex.Message
                 });
             }
         }
+        [HttpDelete("{postId}")]
+        [Authorize]
+        public async Task<IActionResult> DeletePost(int postId)
+        {
+            try
+            {
+                int userId = HttpContext.User.GetUserId();
+                var post = await _unitOfWork.PostRepository.GetEntityByIdAsync(postId);
 
+                if (post == null)
+                {
+                    return NotFound(new { success = false, message = "Post not found" });
+                }
+
+                if (post.UserId != userId)
+                {
+                    return Forbid();
+                }
+
+                if (post.IsDeleted)
+                {
+                    return BadRequest(new { success = false, message = "Post is already deleted" });
+                }
+
+                post.IsDeleted = true;
+                await _unitOfWork.PostRepository.UpdateAsync(post);
+                await _unitOfWork.SaveChanges();
+
+                return Ok(new
+                {
+                    success = true,
+                    message = "Post deleted successfully"
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new
+                {
+                    success = false,
+                    message = "An error occurred while deleting the post",
+                    error = ex.Message
+                });
+            }
+        }
     }
 }

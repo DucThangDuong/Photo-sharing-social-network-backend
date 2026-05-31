@@ -1,5 +1,5 @@
 using Application.Interfaces;
-using API.Entities;
+using API.Models;
 using Infrastructure.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;

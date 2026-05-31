@@ -1,5 +1,5 @@
 using Application.DTOs;
-using API.Entities;
+using API.Models;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -24,6 +24,7 @@ namespace Application.Interfaces
         Task<Post> UpdateCaptionPost(int postId, string newCaption);
         Task<List<PostSummaryDTO>> GetLikedPostsByUserIdAsync(int userId);
         Task<List<PostSummaryDTO>> GetArchivedPostsByUserIdAsync(int userId);
+        Task<List<UserSummaryFollowDTO>> GetPostLikersAsync(int postId, int currentUserId);
         Task<FeedPostDTO?> GetPostsByPostIdArchivedAsync(int PostId, int userId);
     }
 }

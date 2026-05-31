@@ -1,4 +1,4 @@
-using API.Entities;
+using API.Models;
 using Application.DTOs;
 using Application.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -25,7 +25,7 @@ namespace Infrastructure.Repository
         public async Task<List<PostSummaryDTO>> GetPostsSummaryByUserIdAsync(int userId)
         {
             return await _context.Posts
-                .Where(p => p.UserId == userId && p.IsDeleted != true && p.IsArchived!=true)
+                .Where(p => p.UserId == userId && p.IsDeleted != true && p.IsArchived !=true)
                 .OrderByDescending(p => p.CreatedAt)
                 .Select(p => new PostSummaryDTO
                 {
@@ -41,7 +41,7 @@ namespace Infrastructure.Repository
         public async Task<List<PostDetailDTO>> GetPostsByUserIdAsync(int userId)
         {
             return await _context.Posts
-                .Where(p => p.UserId == userId && p.IsDeleted != true)
+                .Where(p => p.UserId == userId && p.IsDeleted != true && p.IsArchived!=true)
                 .OrderByDescending(p => p.CreatedAt)
                 .Select(p => new PostDetailDTO
                 {
@@ -133,7 +133,7 @@ namespace Infrastructure.Repository
                     UserId = userId,
                     CreatedAt = DateTime.UtcNow
                 });
-                return true; // Đã like
+                return true; 
             }
         }
 
@@ -150,7 +150,6 @@ namespace Infrastructure.Repository
             await _context.Comments.AddAsync(comment);
             await _context.SaveChangesAsync();
 
-            // Lấy thông tin user để trả về DTO
             var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == userId);
 
             return new CommentDTO
@@ -167,7 +166,7 @@ namespace Infrastructure.Repository
         public async Task<List<FeedPostDTO>> GetFeedPostsAsync(int currentUserId)
         {
             return await _context.Posts
-                .Where(p => !p.IsDeleted && !p.IsArchived)
+                .Where(p => !p.IsDeleted && !p.IsArchived && p.Visibility!=1)
                 .OrderByDescending(p => p.CreatedAt)
                 .Select(p => new FeedPostDTO
                 {
@@ -241,7 +240,7 @@ namespace Infrastructure.Repository
         public async Task<List<PostDetailDTO>> GetPostsByUserIdAsync(int userId, int myId)
         {
             return await _context.Posts
-                .Where(p => p.UserId == userId && p.IsDeleted != true)
+                .Where(p => p.UserId == userId && p.IsDeleted != true && p.IsArchived!=true)
                 .OrderByDescending(p => p.CreatedAt)
                 .Select(p => new PostDetailDTO
                 {
@@ -348,6 +347,24 @@ namespace Infrastructure.Repository
                     }).ToList()
                 })
                 .ToListAsync();
+        }
+
+        public async Task<List<UserSummaryFollowDTO>> GetPostLikersAsync(int postId, int currentUserId)
+        {
+            var likers = await _context.Likes
+                .Where(l => l.PostId == postId)
+                .Select(l => l.User)
+                .Select(u => new UserSummaryFollowDTO
+                {
+                    Id = u.Id,
+                    Username = u.Username,
+                    FullName = u.FullName,
+                    AvatarUrl = u.AvatarUrl,
+                    isFollowing = _context.Follows.Any(f => f.FollowerId == currentUserId && f.FollowingId == u.Id)
+                })
+                .ToListAsync();
+
+            return likers;
         }
     }
 }

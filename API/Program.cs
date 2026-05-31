@@ -1,4 +1,4 @@
-using API.Entities;
+using API.Models;
 using Application.Interfaces;
 using Infrastructure.Repository;
 using Infrastructure.Services;
@@ -58,6 +58,7 @@ namespace WebApplication1
             builder.Services.AddScoped<IUserRepository, UserRepository>();
             builder.Services.AddScoped<IPostRepository, PostRepository>();
             builder.Services.AddScoped<IJwtServices, JwtTokenService>();
+            builder.Services.AddScoped<IPushNotificationService, PushNotificationService>();
             builder.Services.AddControllers()
                 .AddJsonOptions(options =>
                 {

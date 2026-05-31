@@ -1,4 +1,4 @@
-using API.Entities;
+using API.Models;
 using Application.DTOs;
 using Application.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -61,7 +61,7 @@ namespace Infrastructure.Repository
                 FollowersNumber = u.FollowFollowings.Count(),
                 FollowingsNumber = u.FollowFollowers.Count(),
                 PostsNumber = u.Posts.Count(),
-                gender=u.Gender
+                gender = u.Gender ?? 0 
             })
                 .FirstOrDefaultAsync(u => u.Id == id);
         }

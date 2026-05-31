@@ -1,9 +1,11 @@
 using API.DTOs;
-using API.Entities;
+using API.Extensions;
+using API.Models;
 using Application.Interfaces;
 using Infrastructure.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace API.Controller
@@ -14,10 +16,12 @@ namespace API.Controller
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IJwtServices _jwtTokenService;
-        public AuthController(IUnitOfWork unitOfWork, IJwtServices jwtServices)
+        private readonly Infrastructure.Context.InstagramContext _context;
+        public AuthController(IUnitOfWork unitOfWork, IJwtServices jwtServices, Infrastructure.Context.InstagramContext context)
         {
             _unitOfWork = unitOfWork;
             _jwtTokenService = jwtServices;
+            _context = context;
         }
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginDTO userLogin)
@@ -45,6 +49,15 @@ namespace API.Controller
                     });
                 }
                 string access_token = _jwtTokenService.GenerateAccessToken(user.Id, "User");
+
+                await _unitOfWork.NotificationRepository.CreateNotificationAsync(
+                    receiverId: user.Id,
+                    senderId: user.Id,
+                    type: 1,
+                    previewText: "Bạn vừa đăng nhập thành công vào hệ thống."
+                );
+                await _unitOfWork.SaveChanges();
+
                 return Ok(new
                 {
                     success = true,
@@ -123,6 +136,34 @@ namespace API.Controller
                     errors = new[] { new { field = "Server", message = ex.Message } }
                 });
             }
+        }
+        [HttpPost("save-device-token")]
+        public async Task<IActionResult> SaveDeviceToken([FromBody] SaveTokenRequest request)
+        {
+            int userId = HttpContext.User.GetUserId();
+            var existingDevice = await _context.UserDevices
+                .FirstOrDefaultAsync(d => d.DeviceToken == request.DeviceToken);
+
+            if (existingDevice != null)
+            {
+                existingDevice.UserId = userId;
+                existingDevice.DeviceType = request.DeviceType;
+                existingDevice.UpdatedAt = DateTime.UtcNow;
+            }
+            else
+            {
+                var newDevice = new UserDevice
+                {
+                    UserId = userId,
+                    DeviceToken = request.DeviceToken,
+                    DeviceType = request.DeviceType,
+                    UpdatedAt = DateTime.UtcNow
+                };
+                _context.UserDevices.Add(newDevice);
+            }
+
+            await _context.SaveChangesAsync();
+            return Ok(new { success = true, message = "Lưu thiết bị nhận thông báo thành công!" });
         }
     }
 }
